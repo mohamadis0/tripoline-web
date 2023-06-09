@@ -1,134 +1,130 @@
 import React, { useState } from 'react';
-import { Input, FormControl, InputLabel } from '@mui/material';
-
+import axios from 'axios';
 
 function Driver() {
+  const [driver, setDriver] = useState({
+    DriverName: '',
+    DriverPhone: '',
+    DriverAge: 0,
+    DriverCard: '',
+    DriverCardId: '',
+    DriverAddress: '',
+  });
 
-    const [driver, setDriver] = useState({
-        DriverName: '',
-        DriverPhone: '',
-        DriverAge: '',
-        DriverCard: '',
-        DriverCardId: '',
-        DriverAddress: '',
-    });
 
-    const handleDriverSubmit = (e) => {
-        e.preventDefault();
-        console.log(driver);
+  const handleDriverSubmit = (e) => {
+    e.preventDefault();
+    console.log(driver);
+
+    axios.post('http://localhost:3000/api/drivers', driver)
+      .then((response) => {
+        console.log(response.data);
         resetDriverFields();
-    };
+      })
+      .catch((error) => {
+        console.error('Error adding driver:', error);
+      });
+  };
 
-    const handleChange = (e) => {
-        setDriver({
-            ...driver,
-            [e.target.name]: e.target.value,
-        });
-    };
+  const handleChange = (e) => {
+    if (e.target.name === 'DriverCard') {
+      setDriver({
+        ...driver,
+        [e.target.name]: e.target.files[0].name, // Assuming you want to store the file name
+      });
+    } else {
+      setDriver({
+        ...driver,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
 
-    const resetDriverFields = () => {
-        setDriver({
-            DriverName: '',
-            DriverPhone: '',
-            DriverAge: '',
-            DriverCard: '',
-            DriverCardId: '',
-            DriverAddress: '',
-        });
-    };
+  const resetDriverFields = () => {
+    setDriver({
+      DriverName: '',
+      DriverPhone: '',
+      DriverAge: 0,
+      DriverCard: '',
+      DriverCardId: '',
+      DriverAddress: '',
+    });
+  };
 
-    return (
-        <div>
-            <h2>Create Driver</h2>
-            <form onSubmit={handleDriverSubmit}>
-                <label>
-                    Driver Name:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">name</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="text"
-                            name="DriverName"
-                            value={driver.DriverName}
-                            onChange={handleChange} />
-                    </FormControl>
-                </label>
-                <br />
-                <label>
-                    Driver phone:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">phone</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="phone"
-                            name="DriverPhone"
-                            value={driver.DriverPhone}
-                            onChange={handleChange} />
-                    </FormControl>
-                </label>
-                <br />
-                <label>
-                    Driver age:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">age</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="number"
-                            name="DriverAge"
-                            value={driver.DriverAge}
-                            onChange={handleChange} />
-                    </FormControl>
-                </label>
-                <br />
-                <label>
-                    Driver card:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">card</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="text"
-                            name="DriverCard"
-                            value={driver.DriverCard}
-                            onChange={handleChange} />
-                    </FormControl>
-                </label>
-                <br />
-                <label>
-                    Drive card-Id:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">id</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="text"
-                            name="DriverCardId"
-                            value={driver.DriverCardId}
-                            onChange={handleChange} />
-                    </FormControl>
-                </label>
-                <br />
-                <label>
-                    Driver address:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">address</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="text"
-                            name="DriverAddress"
-                            value={driver.DriverAddress}
-                            onChange={handleChange} />
-                    </FormControl>
-                </label>
-                <br />
-                <button type="submit">Add Driver</button>
-            </form>
-        </div>
-    );
-};
+  return (
+    <div>
+      <h2>Create Driver</h2>
+      <form onSubmit={handleDriverSubmit}>
+        <label>
+          Driver Name:
+          <input
+            type="text"
+            name="DriverName"
+            value={driver.DriverName}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <label>
+          Driver phone:
+          <input
+            type="text"
+            name="DriverPhone"
+            value={driver.DriverPhone}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <label>
+          Driver age:
+          <input
+            type="number"
+            min={0}
+            name="DriverAge"
+            value={driver.DriverAge}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <label>
+          Driver card:
+          <input
+            type="file"
+            name="DriverCard"
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <label>
+          Drive card-Id:
+          <input
+            type="text"
+            name="DriverCardId"
+            value={driver.DriverCardId}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <label>
+          Driver address:
+          <input
+            type="text"
+            name="DriverAddress"
+            value={driver.DriverAddress}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <button type="submit">Add Driver</button>
+      </form>
+    </div>
+  );
+}
 
-export default Driver
+export default Driver;

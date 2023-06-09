@@ -1,86 +1,95 @@
-import React, { useState } from 'react';
-import { Input, FormControl, InputLabel } from '@mui/material';
-
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function Bus() {
+  const [busName, setBusName] = useState('');
+  const [numberOfSeats, setNumberOfSeats] = useState('');
+  const [busDriver, setBusDriver] = useState('');
+  const [drivers, setDrivers] = useState([]);
 
-    const [bus, setBus] = useState({
-        Busname: '',
-        numberOfSeats: '',
-        BusDriver: '',
-    });
+  useEffect(() => {
+    getDrivers();
+  }, []);
 
-    const handleBusSubmit = (e) => {
-        e.preventDefault();
-        console.log(bus);
-        resetBusFields();
+  const getDrivers = async () => {
+    try {
+      const res = await axios.get('http://localhost:3000/api/drivers');
+      setDrivers(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleBusSubmit = async (e) => {
+    e.preventDefault();
+
+    const busData = {
+      Busname: busName,
+      numberOfSeats: numberOfSeats,
+      busDriver: busDriver,
     };
 
-    const handleChange = (e) => {
-        setBus({
-            ...bus,
-            [e.target.name]: e.target.value,
-        });
-    };
+    try {
+      const res = await axios.post('http://localhost:3000/api/buses', busData);
+      console.log(res.data);
+      resetBusFields();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-    const resetBusFields = () => {
-        setBus({
-            Busname: '',
-            numberOfSeats: '',
-            BusDriver: '',
-        });
-    };
+  const handleBusNameChange = (e) => {
+    setBusName(e.target.value);
+  };
 
-    return (
-        <div>
-            <h2>Create Bus</h2>
-            <form onSubmit={handleBusSubmit}>
-                <label>
-                    Bus Name:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">name</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="text"
-                            name="Busname"
-                            value={bus.Busname}
-                            onChange={handleChange} />
-                    </FormControl>
-                </label>
-                <br />
-                <label>
-                    Number of seats:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">nbr seats</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="number"
-                            name="numberOfSeats"
-                            value={bus.numberOfSeats}
-                            onChange={handleChange} />
-                    </FormControl>
-                </label>
-                <br />
-                <label>
-                    Bus driver:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">driver</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="text"
-                            name="BusDriver"
-                            value={bus.BusDriver}
-                            onChange={handleChange} />
-                    </FormControl>
-                </label>
-                <br />
-                <button type="submit">Add Bus</button>
-            </form>
-        </div>
-    );
-};
+  const handleNumberOfSeatsChange = (e) => {
+    setNumberOfSeats(e.target.value);
+  };
 
-export default Bus
+  const handleBusDriverChange = (e) => {
+    setBusDriver(e.target.value);
+  };
+
+  const resetBusFields = () => {
+    setBusName('');
+    setNumberOfSeats('');
+    setBusDriver('');
+  };
+
+  return (
+    <div>
+      <h2>Create Bus</h2>
+      <form onSubmit={handleBusSubmit}>
+        <label>
+          Bus Name:
+          <input type="text" value={busName} onChange={handleBusNameChange} />
+        </label>
+        <br />
+        <label>
+          Number of seats:
+          <input
+            type="number"
+            value={numberOfSeats}
+            onChange={handleNumberOfSeatsChange}
+          />
+        </label>
+        <br />
+        <label>
+          Bus driver:
+          <select value={busDriver} onChange={handleBusDriverChange}>
+            <option value="">Select driver</option>
+            {drivers.map((driver) => (
+              <option key={driver._id} value={driver._id}>
+                {driver.DriverName} {driver.DriverCardId}
+              </option>
+            ))}
+          </select>
+        </label>
+        <br />
+        <button type="submit">Add Bus</button>
+      </form>
+    </div>
+  );
+}
+
+export default Bus;

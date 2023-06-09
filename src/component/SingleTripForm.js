@@ -1,312 +1,211 @@
-import React, { useState } from 'react';
-import { Input, FormControl, InputLabel } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import Select from 'react-select';
+import axios from 'axios';
 
+const SingleTripForm = () => {
+    const [tripName, setTripName] = useState('');
+    const [tripLocation, setTripLocation] = useState('');
+    const [tripDestination, setTripDestination] = useState('');
+    const [estimatedDeparture, setEstimatedDeparture] = useState('');
+    const [departureTime, setDepartureTime] = useState('');
+    const [estimatedArrival, setEstimatedArrival] = useState('');
+    const [arrivalTime, setArrivalTime] = useState('');
+    const [tripLine, setTripLine] = useState('');
+    const [tripStatus, setTripStatus] = useState('upcoming');
+    const [buses, setBuses] = useState([]);
+    const [associatedBuses, setAssociatedBuses] = useState([]);
+    const [stations, setStations] = useState([]);
+    const [selectedStations, setSelectedStations] = useState([]);
 
-function SingleTripForm() {
+    const getBuses = async () => {
+        try {
+            const res = await axios.get('http://localhost:3000/api/buses');
+            setBuses(res.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-    const [trip, setTrip] = useState({
-        TripName: '',//
-        TripLocation: '',///////////
-        TripDestination: '',///////////
-        estimatedDeparture: '',//////////
-        departureTime: '',//////////
-        estimatedArrival: '',/////////
-        arrivalTime: '',/////////
-        tripLine: '',//////////
-        tripStatus: 'upcoming',/////////
-        associatedBuses: '',/////////
-        AvailableSeats: '',
-    });
+    const getStations = async () => {
+        try {
+            const res = await axios.get('http://localhost:3000/api/stations');
+            setStations(res.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-    const handleTripSubmit = (e) => {
+    useEffect(() => {
+        getStations();
+        getBuses();
+    }, []);
+
+    const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(trip);
-        resetTripFields();  // clear fields for new entry
-    };
 
-    const handleChange = (e) => {
-        setTrip({
-            ...trip,
-            [e.target.name]: e.target.value,
-        });
-    };
+        const data = {
+            tripName,
+            tripLocation,
+            tripDestination,
+            estimatedDeparture,
+            departureTime,
+            estimatedArrival,
+            arrivalTime,
+            tripLine,
+            tripStatus,
+            associatedBuses: associatedBuses.map((bus) => bus.value),
+            stations: selectedStations.map((station) => station.value),
+        };
 
-    const resetTripFields = () => {
-        setTrip({
-            TripName: '',//
-            TripLocation: '',///////////
-            TripDestination: '',///////////
-            estimatedDeparture: '',//////////
-            departureTime: '',//////////
-            estimatedArrival: '',/////////
-            arrivalTime: '',/////////
-            tripLine: '',//////////
-            tripStatus: 'upcoming',/////////
-            associatedBuses: '',/////////
-            AvailableSeats: '',
-        });
+        axios
+            .post('http://localhost:3000/api/trips', data)
+            .then((res) => {
+                console.log(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
+        setTripName('');
+        setTripLocation('');
+        setTripDestination('');
+        setEstimatedDeparture('');
+        setDepartureTime('');
+        setEstimatedArrival('');
+        setArrivalTime('');
+        setTripLine('');
+        setTripStatus('upcoming');
+        setAssociatedBuses([]);
+        setSelectedStations([]);
     };
 
     return (
-        <div>
-            <h2>Add Single Trip</h2>
-            <form onSubmit={handleTripSubmit}>
+        <form onSubmit={handleSubmit}>
+            <div className="form-row">
                 <label>
                     Trip Name:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">name</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="text"
-                            name="TripName"
-                            value={trip.TripName}
-                            onChange={handleChange} />
-                    </FormControl>
-                    {/* <input
-                        type="text"
-                        name="TripName"
-                        value={trip.TripName}
-                        onChange={handleChange}
-                    /> */}
+                    <input type="text" value={tripName} onChange={(e) => setTripName(e.target.value)} />
                 </label>
-                <br />
+            </div>
+            <div className="form-row">
                 <label>
                     Trip Location:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">location</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="text"
-                            name="TripLocation"
-                            value={trip.TripLocation}
-                            onChange={handleChange} />
-                    </FormControl>
-                    {/* <input
-                        type="text"
-                        name="TripLocation"
-                        value={trip.TripLocation}
-                        onChange={handleChange}
-                    /> */}
+                    <select value={tripLocation} onChange={(e) => setTripLocation(e.target.value)}>
+                        <option value="">Select location</option>
+                        {stations.map((station) => (
+                            <option key={station._id} value={station._id}>
+                                {station.stationName}, ({station.stationNumber})
+                            </option>
+                        ))}
+                    </select>
                 </label>
-                <br />
+            </div>
+            <div className="form-row">
                 <label>
                     Trip Destination:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">destination</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="text"
-                            name="TripDestination"
-                            value={trip.TripDestination}
-                            onChange={handleChange} />
-                    </FormControl>
-                    {/* <input
-                        type="text"
-                        name="TripDestination"
-                        value={trip.TripDestination}
-                        onChange={handleChange}
-                    /> */}
+                    <select value={tripDestination} onChange={(e) => setTripDestination(e.target.value)}>
+                        <option value="">Select Destination</option>
+                        {stations.map((station) => (
+                            <option key={station._id} value={station._id}>
+                                {station.stationName}, ({station.stationNumber})
+                            </option>
+                        ))}
+                    </select>
                 </label>
-                <br />
-                <label>
-                    Estimated Departure Time:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic"></InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="time"
-                            name="estimatedDeparture"
-                            value={trip.estimatedDeparture}
-                            onChange={handleChange} />
-                    </FormControl>
-                    {/* <input
-                        type="time"
-                        name="estimatedDeparture"
-                        value={trip.estimatedDeparture}
-                        onChange={handleChange}
-                    /> */}
-                </label>
-                <br />
+            </div>
+        
+            <div className="form-row">
                 <label>
                     Departure Time:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic"></InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="time"
-                            name="departureTime"
-                            value={trip.departureTime}
-                            onChange={handleChange} />
-                    </FormControl>
-                    {/* <input
-                        type="time"
-                        name="departureTime"
-                        value={trip.departureTime}
-                        onChange={handleChange}
-                    /> */}
+                    <input type="datetime-local" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} />
                 </label>
-                <br />
-                <label>
-                    Estimated Arrival Time:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic"></InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="time"
-                            name="estimatedArrival"
-                            value={trip.estimatedArrival}
-                            onChange={handleChange} />
-                    </FormControl>
-                    {/* <input
-                        type="time"
-                        name="estimatedArrival"
-                        value={trip.estimatedArrival}
-                        onChange={handleChange}
-                    /> */}
-                </label>
-                <br />
+            </div>
+            <div className="form-row">
                 <label>
                     Arrival Time:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic"></InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="time"
-                            name="arrivalTime"
-                            value={trip.arrivalTime}
-                            onChange={handleChange} />
-                    </FormControl>
-                    {/* <input
-                        type="time"
-                        name="arrivalTime"
-                        value={trip.arrivalTime}
-                        onChange={handleChange}
-                    /> */}
+                    <input type="datetime-local" value={arrivalTime} onChange={(e) => setArrivalTime(e.target.value)} />
                 </label>
-                <br />
+            </div>
+            <div className="form-row">
+                <label>
+                    Estimated Arrival Time:
+                    <input type="datetime-local" value={estimatedArrival} onChange={(e) => setEstimatedArrival(e.target.value)} />
+                </label>
+            </div>
+            <div className="form-row">
+                <label>
+                    Estimated Departure Time:
+                    <input type="datetime-local" value={estimatedDeparture} onChange={(e) => setEstimatedDeparture(e.target.value)} />
+                </label>
+            </div>
+            <div className="form-row">
                 <label>
                     Trip Line:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">line</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="text"
-                            name="tripLine"
-                            value={trip.tripLine}
-                            onChange={handleChange} />
-                    </FormControl>
-                    {/* <input
-                        type="text"
-                        name="tripLine"
-                        value={trip.tripLine}
-                        onChange={handleChange}
-                    /> */}
+                    <input type="text" value={tripLine} onChange={(e) => setTripLine(e.target.value)} />
                 </label>
-                <br />
+            </div>
+            <div className="form-row">
                 <label>
                     Status:
-                    {/* <input
-                        type="radio"
-                        name="Status"
-                        // value={trip.Status}
-                        onChange={handleChange}
-                    /> */}
-                    <label>
-                        <input
-                            type="radio"
-                            name="tripStatus"
-                            value="upcoming"
-                            checked={trip.tripStatus === 'upcoming'}
-                            onChange={handleChange}
-                        // Checked="checked"
-                        />{' '}
-                        UpComing
-                    </label>
-                    <label>
-                        <input
-                            type="radio"
-                            name="tripStatus"
-                            value="ongoing"
-                            checked={trip.tripStatus === 'ongoing'}
-                            onChange={handleChange}
-                        />{' '}
-                        OnGoing
-                    </label>
-                    <label>
-                        <input
-                            type="radio"
-                            name="tripStatus"
-                            value="completed"
-                            checked={trip.tripStatus === 'completed'}
-                            onChange={handleChange}
-                        />{' '}
-                        Completed
-                    </label>
-                    <label>
-                        <input
-                            type="radio"
-                            name="tripStatus"
-                            value="canceled"
-                            checked={trip.tripStatus === 'canceled'}
-                            onChange={handleChange}
-                        />{' '}
-                        Canceled
-                    </label>
+                    <div>
+                        <label>
+                            <input type="radio" name="tripStatus" value="upcoming" checked={tripStatus === 'upcoming'} onChange={() => setTripStatus('upcoming')} />
+                            Upcoming
+                        </label>
+                        <label>
+                            <input type="radio" name="tripStatus" value="ongoing" checked={tripStatus === 'ongoing'} onChange={() => setTripStatus('ongoing')} />
+                            Ongoing
+                        </label>
+                        <label>
+                            <input type="radio" name="tripStatus" value="completed" checked={tripStatus === 'completed'} onChange={() => setTripStatus('completed')} />
+                            Completed
+                        </label>
+                        <label>
+                            <input type="radio" name="tripStatus" value="canceled" checked={tripStatus === 'canceled'} onChange={() => setTripStatus('canceled')} />
+                            Canceled
+                        </label>
+                    </div>
                 </label>
-                <br />
-                <label>
-                    Associated Bus:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">Bus</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="text"
-                            name="associatedBuses"
-                            value={trip.associatedBuses}
-                            onChange={handleChange} />
-                    </FormControl>
-                    {/* <input
-                        id="standard-basic" label="Standard" variant="standard"
-                        type="text"
-                        name="associatedBuses"
-                        value={trip.associatedBuses}
-                        onChange={handleChange}
-                    /> */}
+            </div>
+            <div className="form-row">
+                <label htmlFor="selectedBuses" className="form-label">
+                    Associated Buses:
+                    <Select
+                        id="selectedBuses"
+                        value={associatedBuses}
+                        isMulti
+                        name="selectedBuses"
+                        options={buses.map((bus) => ({
+                            value: bus._id,
+                            label: `${bus.Busname} (${bus.numberOfSeats} seats)`,
+                        }))}
+                        onChange={(selectedOptions) => setAssociatedBuses(selectedOptions)}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                    />
                 </label>
-                <br />
-                <label>
-                    Available Seats:
-                    <FormControl>
-                        <InputLabel htmlFor="standard-basic">available seats</InputLabel>
-                        <Input id="standard-basic"
-                            label="Standard"
-                            variant="standard"
-                            type="number"
-                            name="AvailableSeats"
-                            value={trip.AvailableSeats}
-                            onChange={handleChange} />
-                    </FormControl>
-                    {/* <input
-                        type="number"
-                        name="AvailableSeats"
-                        value={trip.AvailableSeats}
-                        onChange={handleChange}
-                    /> */}
+            </div>
+            <div className="form-row">
+                <label htmlFor="selectedStations" className="form-label">
+                    Stations:
+                    <Select
+                        id="selectedStations"
+                        value={selectedStations}
+                        isMulti
+                        name="selectedStations"
+                        options={stations.map((station) => ({
+                            value: station._id,
+                            label: `${station.stationName} (${station.stationNumber})`,
+                        }))}
+                        onChange={(selectedOptions) => setSelectedStations(selectedOptions)}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                    />
                 </label>
-                <br />
-                <button type="submit">Add Trip</button>
-            </form>
-        </div>
+            </div>
+            <button type="submit">Add Trip</button>
+        </form>
     );
 };
 
-export default SingleTripForm
+export default SingleTripForm;

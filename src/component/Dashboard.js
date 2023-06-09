@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SingleTripForm from './SingleTripForm';
-import RepeatedTripForm from './RepeatedTripForm';
-import { useNavigate } from 'react-router-dom';
+
+import { Link, json, useNavigate } from 'react-router-dom';
 import Bus from './Bus';
 import Driver from './Driver';
 
@@ -22,18 +22,22 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';///////////////////
-import MailIcon from '@mui/icons-material/Mail';
+import  AllTrips  from './AllTrips';
+import  AllBuses  from './AllBuses';
+import  AllDrivers  from './AllDrivers';
+import  AllStations  from './AllStations';
+import  AllProfiles  from './AllProfiles';
 
 import AddRoadIcon from '@mui/icons-material/AddRoad';
-import EventRepeatIcon from '@mui/icons-material/EventRepeat';
+// import EventRepeatIcon from '@mui/icons-material/EventRepeat';
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import AttributionIcon from '@mui/icons-material/Attribution';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-// import * as React from 'react';
-
+import { Button, SvgIcon } from '@mui/material';
+import Profile from './Profile';
 
 const drawerWidth = 240;
+
 
 const openedMixin = (theme) => ({
     width: drawerWidth,
@@ -61,7 +65,6 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
 }));
 
@@ -101,7 +104,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 function Dashboard() {
-
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [currentContent, setCurrentContent] = React.useState('Create trip');
@@ -116,6 +118,56 @@ function Dashboard() {
 
     const handleClick = (text) => {
         setCurrentContent(text);
+    };
+
+
+    const nav = useNavigate();
+
+    const [userInfo, setUserInfo] = useState(null);
+
+
+    const removeuserInfo = () => {
+        localStorage.removeItem('userInformation');
+        setUserInfo(null);
+    };
+
+    useEffect(() => {
+        const storedUserInfo = localStorage.getItem('userInformation');
+        // console.log(storedUserInfo)
+        if (storedUserInfo) {
+            setUserInfo(JSON.parse(storedUserInfo));
+        }
+    }, []);
+
+
+
+    const renderUserInfo = () => {
+        if (userInfo) {
+            return (
+                <div style={{ display: 'flex', alignItems: "center", justifyContent: 'space-between', width: "100%" }}>
+                    <Typography variant="h6" noWrap component="div">
+                        Hello {userInfo.data.user.username}
+                    </Typography>
+
+                    <Button variant="contained" color="primary" onClick={removeuserInfo}>
+                        Logout
+                    </Button>
+                </div>
+            );
+        } else {
+            return (
+                <Typography variant="h6" noWrap component="div">
+
+                    <Link to={'/'} style={{ color: 'white' }}>
+                        Login
+                    </Link>
+                    &nbsp;or&nbsp;
+                    <Link to={'/Signup'} style={{ color: 'white' }}>
+                        Register
+                    </Link>
+                </Typography>
+            );
+        }
     };
 
     return (
@@ -135,27 +187,25 @@ function Dashboard() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Dashboard | Admin
-                    </Typography>
+                    {renderUserInfo()}
                 </Toolbar>
             </AppBar>
-            <Drawer variant="permanent" open={open} >
+            <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose} sx={{color: '#004C64'}}>
+                    <IconButton onClick={handleDrawerClose} sx={{ color: '#004C64' }}>
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    {['Create trip', 'Create batch trip', 'Create bus', 'Create driver'].map((text, index) => (
+                    {['Create trip', 'Create profile', 'Create bus', 'Create driver'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
                                     minHeight: 48,
                                     justifyContent: open ? 'initial' : 'center',
                                     px: 2.5,
-                                    color: '#004C64'
+                                    color: '#004C64',
                                 }}
                                 onClick={() => handleClick(text)}
                             >
@@ -166,11 +216,10 @@ function Dashboard() {
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                                    {index === 0 && <AddRoadIcon sx={{color: '#004C64'}}/>} 
-                                    {index === 1 && <EventRepeatIcon sx={{color: '#004C64'}}/>}
-                                    {index === 2 && <DirectionsBusIcon sx={{color: '#004C64'}}/>}
-                                    {index === 3 && <AttributionIcon sx={{color: '#004C64'}}/>}
+                                    {index === 0 && <AddRoadIcon sx={{ color: '#004C64' }} />}
+                                    {index === 1 && <PersonAddAltRoundedIcon sx={{ color: '#004C64' }} />}
+                                    {index === 2 && <DirectionsBusIcon sx={{ color: '#004C64' }} />}
+                                    {index === 3 && <AttributionIcon sx={{ color: '#004C64' }} />}
                                 </ListItemIcon>
                                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
                             </ListItemButton>
@@ -179,14 +228,14 @@ function Dashboard() {
                 </List>
                 <Divider />
                 <List>
-                    {['Create profile'].map((text, index) => (
+                    {[, 'Get all trips', 'Get all buses', 'Get all drivers', 'Get all stations'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
                                     minHeight: 48,
                                     justifyContent: open ? 'initial' : 'center',
                                     px: 2.5,
-                                    color: '#004C64'
+                                    color: '#004C64',
                                 }}
                                 onClick={() => handleClick(text)}
                             >
@@ -197,46 +246,71 @@ function Dashboard() {
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    {/* {index % 2 === 0 ? <InboxIcon /> : <MailIcon />} */}
-                                    {index === 0 && <PersonAddAltRoundedIcon sx={{color: '#004C64'}}/>} 
+                                    {index === 0 && <AddRoadIcon sx={{ color: '#004C64' }} />}
+                                    {index === 1 && <AddRoadIcon sx={{ color: '#004C64' }} />}
+                                    {index === 2 && <AddRoadIcon sx={{ color: '#004C64' }} />}
+                                    {index === 3 && <AddRoadIcon sx={{ color: '#004C64' }} />}
+                                    {index === 4 && <AddRoadIcon sx={{ color: '#004C64' }} />}
+                                    {index === 5 && <AddRoadIcon sx={{ color: '#004C64' }} />}
                                 </ListItemIcon>
                                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
                             </ListItemButton>
                         </ListItem>
                     ))}
                 </List>
+
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
                 {currentContent === 'Create trip' && (
                     <Typography paragraph>
-                        <SingleTripForm/>
-                    </Typography>
-                )}
-                {currentContent === 'Create batch trip' && (
-                    <Typography paragraph>
-                        <RepeatedTripForm/>
+                        <SingleTripForm />
                     </Typography>
                 )}
                 {currentContent === 'Create bus' && (
                     <Typography paragraph>
-                        <Bus/>
+                        <Bus />
                     </Typography>
                 )}
                 {currentContent === 'Create driver' && (
                     <Typography paragraph>
-                        <Driver/>
+                        <Driver />
                     </Typography>
                 )}
                 {currentContent === 'Create profile' && (
                     <Typography paragraph>
-                        Content for Create profile
+                        <Profile />
+                    </Typography>
+                )}
+                {currentContent === 'Get all trips' && (
+                    <Typography paragraph>
+                        <AllTrips />
+                    </Typography>
+                )}
+                {currentContent === 'Get all buses' && (
+                    <Typography paragraph>
+                        <AllBuses />
+                    </Typography>
+                )}
+                {currentContent === 'Get all drivers' && (
+                    <Typography paragraph>
+                        <AllDrivers />
+                    </Typography>
+                )}
+                {currentContent === 'Get all stations' && (
+                    <Typography paragraph>
+                        <AllStations />
+                    </Typography>
+                )}
+                {currentContent === 'Get all profiles' && (
+                    <Typography paragraph>
+                        <AllProfiles />
                     </Typography>
                 )}
             </Box>
 
         </Box>
     );
-};
+}
 
-export default Dashboard
+export default Dashboard;
