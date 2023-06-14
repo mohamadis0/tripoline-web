@@ -22,11 +22,11 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import  AllTrips  from './AllTrips';
-import  AllBuses  from './AllBuses';
-import  AllDrivers  from './AllDrivers';
-import  AllStations  from './AllStations';
-import  AllProfiles  from './AllProfiles';
+import AllTrips from './AllTrips';
+import AllBuses from './AllBuses';
+import AllDrivers from './AllDrivers';
+import AllStations from './AllStations';
+import AllProfiles from './AllProfiles';
 
 import AddRoadIcon from '@mui/icons-material/AddRoad';
 // import EventRepeatIcon from '@mui/icons-material/EventRepeat';
@@ -35,6 +35,16 @@ import AttributionIcon from '@mui/icons-material/Attribution';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 import { Button, SvgIcon } from '@mui/material';
 import Profile from './Profile';
+
+import MuiGrid from '@mui/material/Grid';
+const Grid = styled(MuiGrid)(({ theme }) => ({
+    width: '100%',
+    ...theme.typography.body2,
+    '& [role="separator"]': {
+        margin: theme.spacing(0, 2),
+    },
+}));
+
 
 const drawerWidth = 240;
 
@@ -228,7 +238,7 @@ function Dashboard() {
                 </List>
                 <Divider />
                 <List>
-                    {[, 'Get all trips', 'Get all buses', 'Get all drivers', 'Get all stations'].map((text, index) => (
+                    {['Get all stations'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
@@ -247,11 +257,11 @@ function Dashboard() {
                                     }}
                                 >
                                     {index === 0 && <AddRoadIcon sx={{ color: '#004C64' }} />}
-                                    {index === 1 && <AddRoadIcon sx={{ color: '#004C64' }} />}
+                                    {/* {index === 1 && <AddRoadIcon sx={{ color: '#004C64' }} />}
                                     {index === 2 && <AddRoadIcon sx={{ color: '#004C64' }} />}
                                     {index === 3 && <AddRoadIcon sx={{ color: '#004C64' }} />}
                                     {index === 4 && <AddRoadIcon sx={{ color: '#004C64' }} />}
-                                    {index === 5 && <AddRoadIcon sx={{ color: '#004C64' }} />}
+                                    {index === 5 && <AddRoadIcon sx={{ color: '#004C64' }} />} */}
                                 </ListItemIcon>
                                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
                             </ListItemButton>
@@ -264,37 +274,53 @@ function Dashboard() {
                 <DrawerHeader />
                 {currentContent === 'Create trip' && (
                     <Typography paragraph>
-                        <SingleTripForm />
+                        <Grid container>
+                            <Grid item xs>
+                                <AllTrips />
+                            </Grid>
+                            <Divider orientation="vertical" flexItem>Create Trip</Divider>
+                            <Grid item xs>
+                                <SingleTripForm />
+                            </Grid>
+                        </Grid>
                     </Typography>
                 )}
                 {currentContent === 'Create bus' && (
                     <Typography paragraph>
-                        <Bus />
-                    </Typography>
+                        <Grid container>
+                            <Grid item xs>
+                                <AllBuses />
+                            </Grid>
+                            <Divider orientation="vertical" flexItem>Create Bus</Divider>
+                            <Grid item xs>
+                                <Bus/>
+                            </Grid>
+                        </Grid>                    </Typography>
                 )}
                 {currentContent === 'Create driver' && (
                     <Typography paragraph>
-                        <Driver />
+                        <Grid container>
+                            <Grid item xs>
+                                <AllDrivers />
+                            </Grid>
+                            <Divider orientation="vertical" flexItem>Create Driver</Divider>
+                            <Grid item xs>
+                                <Driver />
+                            </Grid>
+                        </Grid>
                     </Typography>
                 )}
                 {currentContent === 'Create profile' && (
                     <Typography paragraph>
-                        <Profile />
-                    </Typography>
-                )}
-                {currentContent === 'Get all trips' && (
-                    <Typography paragraph>
-                        <AllTrips />
-                    </Typography>
-                )}
-                {currentContent === 'Get all buses' && (
-                    <Typography paragraph>
-                        <AllBuses />
-                    </Typography>
-                )}
-                {currentContent === 'Get all drivers' && (
-                    <Typography paragraph>
-                        <AllDrivers />
+                        <Grid container>
+                            <Grid item xs>
+                                <AllProfiles />
+                            </Grid>
+                            <Divider orientation="vertical" flexItem>Create Profile</Divider>
+                            <Grid item xs>
+                                <Profile />
+                            </Grid>
+                        </Grid>
                     </Typography>
                 )}
                 {currentContent === 'Get all stations' && (
@@ -309,7 +335,7 @@ function Dashboard() {
                 )}
             </Box>
 
-        </Box>
+        </Box >
     );
 }
 

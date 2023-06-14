@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
 
 
 function formatDateTime(dateTimeString) {
@@ -19,7 +20,9 @@ function formatDateTime(dateTimeString) {
 }
 
 const SingleTrip = () => {
-  const [tripData, setTripData] = useState(null);
+  const [tripData, setTripData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const getSingleTrip = async () => {
     try {
@@ -46,48 +49,75 @@ const SingleTrip = () => {
     }
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, tripData.length - page * rowsPerPage);
+
 
   return (
     <div className="table-responsive">
-      <table className="trip-table">
-        <thead>
-          <tr>
-            <th>Trip Name</th>
-            <th>Location</th>
-            <th>Destination</th>
-            <th>Bus Name</th>
-
-            <th>Status</th>
-            <th>Departure Time</th>
-            <th>Estimated Departure</th>
-            <th>Arrival Time</th>
-            <th>Estimated Arrival</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          {tripData &&
-            tripData.map((trip, index) => (
-              <tr key={index}>
-                <td>{trip?.tripName}</td>
-                <td>{trip?.tripLocation?.stationName}</td>
-                <td>{trip?.tripDestination?.stationName}</td>
-                <td>{trip?.associatedBuses[index]?.Busname ? trip?.associatedBuses[index]?.Busname : 'no bus'}</td>
-                <td>{trip.tripStatus}</td>
-                <td>{formatDateTime(trip?.departureTime)}</td>
-                <td>{formatDateTime(trip?.estimatedDeparture)}</td>
-                <td>{formatDateTime(trip?.arrivalTime)}</td>
-                <td>{formatDateTime(trip?.estimatedArrival)}</td>
-                <td>
+      <TableContainer component={Paper}>
+        <Table className="trip-table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Trip Name</TableCell>
+              <TableCell>Location</TableCell>
+              <TableCell>Destination</TableCell>
+              <TableCell>Bus Name</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Departure Time</TableCell>
+              <TableCell>Estimated Departure</TableCell>
+              <TableCell>Arrival Time</TableCell>
+              <TableCell>Estimated Arrival</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? tripData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : tripData
+            ).map((trip, index) => (
+              <TableRow key={index}>
+                <TableCell>{trip?.tripName}</TableCell>
+                <TableCell>{trip?.tripLocation?.stationName}</TableCell>
+                <TableCell>{trip?.tripDestination?.stationName}</TableCell>
+                <TableCell>{trip?.associatedBuses[index]?.Busname ? trip?.associatedBuses[index]?.Busname : 'no bus'}</TableCell>
+                <TableCell>{trip.tripStatus}</TableCell>
+                <TableCell>{formatDateTime(trip?.departureTime)}</TableCell>
+                <TableCell>{formatDateTime(trip?.estimatedDeparture)}</TableCell>
+                <TableCell>{formatDateTime(trip?.arrivalTime)}</TableCell>
+                <TableCell>{formatDateTime(trip?.estimatedArrival)}</TableCell>
+                <TableCell>
                   <button
                     style={{ backgroundColor: "red", color: "white" }}
                     onClick={() => handleDeleteTrip(trip._id)}>Delete</button>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-        </tbody>
-      </table>
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={10} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={tripData.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <ToastContainer />
     </div>
   );

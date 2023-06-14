@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
 
 const AllDrivers = () => {
   const [driverData, setDriverData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const getAllDrivers = async () => {
     try {
@@ -31,37 +34,68 @@ const AllDrivers = () => {
     getAllDrivers();
   }, []);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, driverData.length - page * rowsPerPage);
+
+
   return (
     <div className="table-responsive">
-      <table className="bus-table">
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>License Number</th>
-            <th>Age</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {driverData.map((driver, index) => (
-            <tr key={index}>
-              <td><img src={driver.DriverCard} /></td>
-              <td>{driver.DriverName}</td>
-              <td>{driver.DriverCardId}</td>
-              <td>{driver.DriverAge}</td>
-              <td>
-                <button
-                  style={{ backgroundColor: 'red' }}
-                  onClick={() => deleteDriver(driver._id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <TableContainer component={Paper}>
+        <Table className="bus-table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Image</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>License Number</TableCell>
+              <TableCell>Age</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? driverData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : driverData
+            ).map((driver, index) => (
+              <TableRow key={index}>
+                <TableCell><img src={driver.DriverCard} alt="Driver Card" /></TableCell>
+                <TableCell>{driver.DriverName}</TableCell>
+                <TableCell>{driver.DriverCardId}</TableCell>
+                <TableCell>{driver.DriverAge}</TableCell>
+                <TableCell>
+                  <button
+                    style={{ backgroundColor: 'red' }}
+                    onClick={() => deleteDriver(driver._id)}
+                  >
+                    Delete
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={5} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={driverData.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <ToastContainer />
     </div>
   );

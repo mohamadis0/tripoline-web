@@ -58,11 +58,10 @@ function Bus() {
 
   return (
     <div>
-      <h2>Create Bus</h2>
       <form onSubmit={handleBusSubmit}>
         <label>
           Bus Name:
-          <input type="text" value={busName} onChange={handleBusNameChange} />
+          <input type="text" value={busName} onChange={handleBusNameChange} required />
         </label>
         <br />
         <label>
@@ -71,12 +70,13 @@ function Bus() {
             type="number"
             value={numberOfSeats}
             onChange={handleNumberOfSeatsChange}
+            required
           />
         </label>
         <br />
         <label>
           Bus driver:
-          <select value={busDriver} onChange={handleBusDriverChange}>
+          <select value={busDriver} onChange={handleBusDriverChange} required>
             <option value="">Select driver</option>
             {drivers.map((driver) => (
               <option key={driver._id} value={driver._id}>
@@ -86,7 +86,9 @@ function Bus() {
           </select>
         </label>
         <br />
-        <button type="submit">Add Bus</button>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <button type="submit">Add Bus</button>
+        </div>
       </form>
     </div>
   );

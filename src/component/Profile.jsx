@@ -54,7 +54,7 @@ const Profile = () => {
 
     return (
         <div className='containerForprofile'>
-            <form onSubmit={handleAdminFormSubmit}>
+            <form onSubmit={handleAdminFormSubmit} style={{margin:20}}>
                 <h2>Create Admin</h2>
                 <label htmlFor="adminUsername">Username:</label>
                 <input type="text" id="adminUsername" name="username" value={adminFormData.username} onChange={handleAdminInputChange} required />
@@ -73,7 +73,9 @@ const Profile = () => {
 
                 <br />
                 <br />
-                <button type="submit">Create Admin</button>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <button type="submit">Create Admin</button>
+                </div>
             </form>
 
             <form onSubmit={handleBusManagerFormSubmit}>
@@ -94,7 +96,9 @@ const Profile = () => {
                 <input type="password" id="busManagerPasswordConfirm" name="passwordConfirm" value={busManagerFormData.passwordConfirm} onChange={handleBusManagerInputChange} required />
                 <br />
                 <br />
-                <button type="submit">Create Bus Manager</button>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <button type="submit">Create Bus Manager</button>
+                </div>
             </form>
         </div>
     );

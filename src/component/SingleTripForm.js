@@ -84,13 +84,13 @@ const SingleTripForm = () => {
             <div className="form-row">
                 <label>
                     Trip Name:
-                    <input type="text" value={tripName} onChange={(e) => setTripName(e.target.value)} />
+                    <input type="text" value={tripName} onChange={(e) => setTripName(e.target.value)} required />
                 </label>
             </div>
             <div className="form-row">
                 <label>
                     Trip Location:
-                    <select value={tripLocation} onChange={(e) => setTripLocation(e.target.value)}>
+                    <select value={tripLocation} onChange={(e) => setTripLocation(e.target.value)} required>
                         <option value="">Select location</option>
                         {stations.map((station) => (
                             <option key={station._id} value={station._id}>
@@ -103,7 +103,7 @@ const SingleTripForm = () => {
             <div className="form-row">
                 <label>
                     Trip Destination:
-                    <select value={tripDestination} onChange={(e) => setTripDestination(e.target.value)}>
+                    <select value={tripDestination} onChange={(e) => setTripDestination(e.target.value)} required>
                         <option value="">Select Destination</option>
                         {stations.map((station) => (
                             <option key={station._id} value={station._id}>
@@ -113,35 +113,35 @@ const SingleTripForm = () => {
                     </select>
                 </label>
             </div>
-        
+
             <div className="form-row">
                 <label>
                     Departure Time:
-                    <input type="datetime-local" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} />
+                    <input type="datetime-local" value={departureTime} onChange={(e) => setDepartureTime(e.target.value)} required />
                 </label>
             </div>
             <div className="form-row">
                 <label>
                     Arrival Time:
-                    <input type="datetime-local" value={arrivalTime} onChange={(e) => setArrivalTime(e.target.value)} />
+                    <input type="datetime-local" value={arrivalTime} onChange={(e) => setArrivalTime(e.target.value)} required />
                 </label>
             </div>
             <div className="form-row">
                 <label>
                     Estimated Arrival Time:
-                    <input type="datetime-local" value={estimatedArrival} onChange={(e) => setEstimatedArrival(e.target.value)} />
+                    <input type="datetime-local" value={estimatedArrival} onChange={(e) => setEstimatedArrival(e.target.value)} required />
                 </label>
             </div>
             <div className="form-row">
                 <label>
                     Estimated Departure Time:
-                    <input type="datetime-local" value={estimatedDeparture} onChange={(e) => setEstimatedDeparture(e.target.value)} />
+                    <input type="datetime-local" value={estimatedDeparture} onChange={(e) => setEstimatedDeparture(e.target.value)} required />
                 </label>
             </div>
             <div className="form-row">
                 <label>
                     Trip Line:
-                    <input type="text" value={tripLine} onChange={(e) => setTripLine(e.target.value)} />
+                    <input type="text" value={tripLine} onChange={(e) => setTripLine(e.target.value)} required />
                 </label>
             </div>
             <div className="form-row">
@@ -182,6 +182,7 @@ const SingleTripForm = () => {
                         onChange={(selectedOptions) => setAssociatedBuses(selectedOptions)}
                         className="basic-multi-select"
                         classNamePrefix="select"
+                        required
                     />
                 </label>
             </div>
@@ -200,10 +201,13 @@ const SingleTripForm = () => {
                         onChange={(selectedOptions) => setSelectedStations(selectedOptions)}
                         className="basic-multi-select"
                         classNamePrefix="select"
+                        required
                     />
                 </label>
             </div>
-            <button type="submit">Add Trip</button>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <button type="submit">Add Trip</button>
+            </div>
         </form>
     );
 };

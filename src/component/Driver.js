@@ -53,7 +53,6 @@ function Driver() {
 
   return (
     <div>
-      <h2>Create Driver</h2>
       <form onSubmit={handleDriverSubmit}>
         <label>
           Driver Name:
@@ -121,7 +120,9 @@ function Driver() {
           />
         </label>
         <br />
-        <button type="submit">Add Driver</button>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <button type="submit">Add Driver</button>
+        </div>
       </form>
     </div>
   );
