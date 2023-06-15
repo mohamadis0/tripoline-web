@@ -35,8 +35,11 @@ import AttributionIcon from '@mui/icons-material/Attribution';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 import { Button, SvgIcon } from '@mui/material';
 import Profile from './Profile';
+import Station from './Station';
 
 import MuiGrid from '@mui/material/Grid';
+import User from './User';
+import AllUsers from './AllUsers';
 const Grid = styled(MuiGrid)(({ theme }) => ({
     width: '100%',
     ...theme.typography.body2,
@@ -238,7 +241,7 @@ function Dashboard() {
                 </List>
                 <Divider />
                 <List>
-                    {['Get all stations'].map((text, index) => (
+                    {['Create stations' , 'Create users'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
@@ -257,8 +260,8 @@ function Dashboard() {
                                     }}
                                 >
                                     {index === 0 && <AddRoadIcon sx={{ color: '#004C64' }} />}
-                                    {/* {index === 1 && <AddRoadIcon sx={{ color: '#004C64' }} />}
-                                    {index === 2 && <AddRoadIcon sx={{ color: '#004C64' }} />}
+                                    {index === 1 && <AddRoadIcon sx={{ color: '#004C64' }} />}
+                                    {/*{index === 2 && <AddRoadIcon sx={{ color: '#004C64' }} />}
                                     {index === 3 && <AddRoadIcon sx={{ color: '#004C64' }} />}
                                     {index === 4 && <AddRoadIcon sx={{ color: '#004C64' }} />}
                                     {index === 5 && <AddRoadIcon sx={{ color: '#004C64' }} />} */}
@@ -323,14 +326,30 @@ function Dashboard() {
                         </Grid>
                     </Typography>
                 )}
-                {currentContent === 'Get all stations' && (
+                {currentContent === 'Create stations' && (
                     <Typography paragraph>
-                        <AllStations />
+                         <Grid container>
+                            <Grid item xs>
+                                <AllStations />
+                            </Grid>
+                            <Divider orientation="vertical" flexItem>Create Station</Divider>
+                            <Grid item xs>
+                                <Station />
+                            </Grid>
+                        </Grid>                        
                     </Typography>
                 )}
-                {currentContent === 'Get all profiles' && (
+                {currentContent === 'Create users' && (
                     <Typography paragraph>
-                        <AllProfiles />
+                         <Grid container>
+                            <Grid item xs>
+                                <AllUsers/>
+                            </Grid>
+                            <Divider orientation="vertical" flexItem>Create User</Divider>
+                            <Grid item xs>
+                                <User />
+                            </Grid>
+                        </Grid>  
                     </Typography>
                 )}
             </Box>

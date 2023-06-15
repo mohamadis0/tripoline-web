@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from '@mui/material';
 
 const AllStations = () => {
   const [stationData, setStationData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const getAllStations = async () => {
     try {
@@ -31,35 +34,64 @@ const AllStations = () => {
     getAllStations();
   }, []);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, stationData.length - page * rowsPerPage);
+
+
   return (
     <div className="table-responsive">
-      <table className="bus-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Number</th>
-            <th>status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {stationData.map((station, index) => (
-            <tr key={index}>
-              <td>{station.stationName}</td>
-              <td>{station.stationNumber}</td>
-              <td>{station.stationStatus}</td>
-              <td>
+      <Table className="bus-table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell>Number</TableCell>
+            <TableCell>Status</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {(rowsPerPage > 0
+            ? stationData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : stationData
+          ).map((station, index) => (
+            <TableRow key={index}>
+              <TableCell>{station.stationName}</TableCell>
+              <TableCell>{station.stationNumber}</TableCell>
+              <TableCell>{station.stationStatus}</TableCell>
+              <TableCell>
                 <button
                   style={{ backgroundColor: 'red', color: 'white' }}
                   onClick={() => deleteStation(station._id)}
                 >
                   Delete
                 </button>
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+          {emptyRows > 0 && (
+            <TableRow style={{ height: 53 * emptyRows }}>
+              <TableCell colSpan={4} />
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={stationData.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
       <ToastContainer />
     </div>
   );
