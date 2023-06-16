@@ -2,15 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const User = () => {
-    const [user, setUser] = useState({
-        username: '',
-        email: '',
-        password: '',
-        passwordConfirm: '',
-        profileId: '',
-        phone: '',
-    });
-
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirm, setPasswordConfirm] = useState('');
+    const [profileId, setProfileId] = useState('');
+    const [phone, setPhone] = useState('');
     const [profiles, setProfiles] = useState([]);
 
     useEffect(() => {
@@ -28,8 +25,17 @@ const User = () => {
 
     const handleUserSubmit = async (e) => {
         e.preventDefault();
+        const user = {
+            username,
+            email,
+            password,
+            passwordConfirm,
+            profileId,
+            phone,
+        };
+
         try {
-            await axios.post('http://localhost:3000/api/users', user);
+            await axios.post('http://localhost:3000/api/users/register', user);
             resetUserFields();
             console.log('User created successfully');
         } catch (error) {
@@ -37,22 +43,13 @@ const User = () => {
         }
     };
 
-    const handleChange = (e) => {
-        setUser({
-            ...user,
-            [e.target.name]: e.target.value,
-        });
-    };
-
     const resetUserFields = () => {
-        setUser({
-            username: '',
-            email: '',
-            password: '',
-            passwordConfirm: '',
-            profileId: '',
-            phone: '',
-        });
+        setUsername('');
+        setEmail('');
+        setPassword('');
+        setPasswordConfirm('');
+        setProfileId('');
+        setPhone('');
     };
 
     return (
@@ -62,9 +59,8 @@ const User = () => {
                     Username:
                     <input
                         type="text"
-                        name="username"
-                        value={user.username}
-                        onChange={handleChange}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                         required
                     />
                 </label>
@@ -73,9 +69,8 @@ const User = () => {
                     Email:
                     <input
                         type="email"
-                        name="email"
-                        value={user.email}
-                        onChange={handleChange}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </label>
@@ -84,9 +79,8 @@ const User = () => {
                     Password:
                     <input
                         type="password"
-                        name="password"
-                        value={user.password}
-                        onChange={handleChange}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </label>
@@ -95,18 +89,17 @@ const User = () => {
                     Confirm Password:
                     <input
                         type="password"
-                        name="passwordConfirm"
-                        value={user.passwordConfirm}
-                        onChange={handleChange}
+                        value={passwordConfirm}
+                        onChange={(e) => setPasswordConfirm(e.target.value)}
                         required
                     />
                 </label>
                 <br />
                 <label>
                     Profile:
-                    <select name="profileId"
-                        value={user.profileId}
-                        onChange={handleChange}
+                    <select
+                        value={profileId}
+                        onChange={(e) => setProfileId(e.target.value)}
                         required
                     >
                         <option value="">Select a profile</option>
@@ -122,9 +115,8 @@ const User = () => {
                     Phone:
                     <input
                         type="text"
-                        name="phone"
-                        value={user.phone}
-                        onChange={handleChange}
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
                         required
                     />
                 </label>

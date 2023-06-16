@@ -142,6 +142,7 @@ function Dashboard() {
     const removeuserInfo = () => {
         localStorage.removeItem('userInformation');
         setUserInfo(null);
+        nav('/');
     };
 
     useEffect(() => {

@@ -9,9 +9,7 @@ const AllUsers = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
 
-    useEffect(() => {
-        getAllUsers();
-    }, []);
+
 
     const getAllUsers = async () => {
         try {
@@ -22,6 +20,10 @@ const AllUsers = () => {
             console.log('Error retrieving users:', error);
         }
     };
+
+    useEffect(() => {
+        getAllUsers();
+    }, []);
 
     const deleteUser = async (userId) => {
         try {
@@ -68,7 +70,7 @@ const AllUsers = () => {
                             <TableRow key={user._id}>
                                 <TableCell>{user.username}</TableCell>
                                 <TableCell>{user.email}</TableCell>
-                                <TableCell>{user.profileId}</TableCell>
+                                <TableCell>{user?.profileId?.profileName}</TableCell>
                                 <TableCell>{user.phone}</TableCell>
                                 <TableCell>{user.type}</TableCell>
                                 <TableCell>
