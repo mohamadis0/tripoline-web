@@ -3,6 +3,8 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Table, TableHead, TableBody, TableRow, TableCell, TablePagination, Modal, Box, Typography, Button } from '@mui/material';
+import Loader from './Loader';
+
 
 const StationDeletionModal = ({ stationId, handleDeleteStation, modalState, setModalState }) => {
   const style = {
@@ -33,7 +35,9 @@ const StationDeletionModal = ({ stationId, handleDeleteStation, modalState, setM
             This action cannot be undone.
           </Typography>
           <Button onClick={() => setModalState(false)}>Cancel</Button>
-          <Button onClick={() => handleDeleteStation(stationId)}>Delete</Button>
+          <Button 
+          className='delete-button'
+          onClick={() => handleDeleteStation(stationId)}>Delete</Button>
         </Box>
       </Modal>
     </div>
@@ -42,6 +46,7 @@ const StationDeletionModal = ({ stationId, handleDeleteStation, modalState, setM
 
 const AllStations = () => {
   const [stationData, setStationData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [modalState, setModalState] = useState(false);
@@ -49,24 +54,31 @@ const AllStations = () => {
 
   const getAllStations = async () => {
     try {
+      setLoading(true);
       const res = await axios.get('http://localhost:3000/api/stations');
       setStationData(res.data);
       console.log(res.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
+      toast.error('Error retrieving stations');
     }
   };
 
   const deleteStation = async (stationId) => {
     try {
+      setLoading(true);
       await axios.delete(`http://localhost:3000/api/stations/${stationId}`);
       getAllStations();
       toast.success('Station deleted successfully');
-      setModalState(false)
+      setModalState(false);
+      setLoading(false);
     } catch (error) {
       console.log(error);
       toast.error('Error deleting station');
-      setModalState(false)
+      setModalState(false);
+      setLoading(false);
     }
   };
 
@@ -92,41 +104,45 @@ const AllStations = () => {
 
   return (
     <div className="table-responsive">
-      <Table className="bus-table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Number</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {(rowsPerPage > 0
-            ? stationData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : stationData
-          ).map((station, index) => (
-            <TableRow key={index}>
-              <TableCell>{station.stationName}</TableCell>
-              <TableCell>{station.stationNumber}</TableCell>
-              <TableCell>{station.stationStatus}</TableCell>
-              <TableCell>
-                <button
-                  style={{ backgroundColor: 'red', color: 'white' }}
-                  onClick={() => handleDeleteStationConfirmation(station._id)}
-                >
-                  Delete
-                </button>
-              </TableCell>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Table className="bus-table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Number</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
-          ))}
-          {emptyRows > 0 && (
-            <TableRow style={{ height: 53 * emptyRows }}>
-              <TableCell colSpan={4} />
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {(rowsPerPage > 0
+              ? stationData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : stationData
+            ).map((station, index) => (
+              <TableRow key={index}>
+                <TableCell>{station.stationName}</TableCell>
+                <TableCell>{station.stationNumber}</TableCell>
+                <TableCell>{station.stationStatus}</TableCell>
+                <TableCell>
+                  <button
+                    onClick={() => handleDeleteStationConfirmation(station._id)}
+                    className='delete-button'
+                  >
+                    Delete
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={4} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      )}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"

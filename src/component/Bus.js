@@ -58,25 +58,35 @@ function Bus() {
 
   return (
     <div>
-      <form onSubmit={handleBusSubmit}>
-        <label>
-          Bus Name:
-          <input type="text" value={busName} onChange={handleBusNameChange} required />
-        </label>
-        <br />
-        <label>
-          Number of seats:
+      <form onSubmit={handleBusSubmit} className="bus-form">
+        <div className="form-group">
+          <label htmlFor="busName">Bus Name:</label>
+          <input
+            type="text"
+            id="busName"
+            value={busName}
+            onChange={handleBusNameChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="numberOfSeats">Number of Seats:</label>
           <input
             type="number"
+            id="numberOfSeats"
             value={numberOfSeats}
             onChange={handleNumberOfSeatsChange}
             required
           />
-        </label>
-        <br />
-        <label>
-          Bus driver:
-          <select value={busDriver} onChange={handleBusDriverChange} required>
+        </div>
+        <div className="form-group">
+          <label htmlFor="busDriver">Bus Driver:</label>
+          <select
+            id="busDriver"
+            value={busDriver}
+            onChange={handleBusDriverChange}
+            required
+          >
             <option value="">Select driver</option>
             {drivers.map((driver) => (
               <option key={driver._id} value={driver._id}>
@@ -84,9 +94,8 @@ function Bus() {
               </option>
             ))}
           </select>
-        </label>
-        <br />
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        </div>
+        <div className="form-group">
           <button type="submit">Add Bus</button>
         </div>
       </form>

@@ -290,16 +290,8 @@ function Dashboard() {
                 {currentContent === 'Create trip' && (
                     <Typography paragraph>
                         <Grid container>
-                            <Grid item xs={6}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <AllTrips />
-                                </Box>
-                            </Grid>
                             <Grid item xs={6}>
-                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                    <Divider orientation="vertical" flexItem>Create Trip</Divider>
-                                    <SingleTripForm />
-                                </Box>
                             </Grid>
                         </Grid>
                     </Typography>
@@ -315,7 +307,7 @@ function Dashboard() {
                             </Grid>
                             <Grid item xs={6}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                    {showBus && <Bus />}
+                                     <Bus />
                                 </Box>
                             </Grid>
                         </Grid>
