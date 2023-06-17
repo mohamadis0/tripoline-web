@@ -129,7 +129,9 @@ const User = () => {
                     />
                 </label>
                 <br />
-                <button type="submit">Create User</button>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <button type="submit">Create User</button>
+                </div>
             </form>
         </div>
     );

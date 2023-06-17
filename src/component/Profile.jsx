@@ -57,7 +57,9 @@ const Profile = () => {
           />
         </label>
         <br />
-        <button type="submit">Create Profile</button>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <button type="submit">Create Profile</button>
+        </div>
       </form>
     </div>
   );

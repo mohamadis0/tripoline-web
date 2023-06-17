@@ -40,6 +40,9 @@ import Station from './Station';
 import MuiGrid from '@mui/material/Grid';
 import User from './User';
 import AllUsers from './AllUsers';
+import { Container } from '@mui/material';
+
+
 const Grid = styled(MuiGrid)(({ theme }) => ({
     width: '100%',
     ...theme.typography.body2,
@@ -117,9 +120,17 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 function Dashboard() {
+    const navigate = useNavigate();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [currentContent, setCurrentContent] = React.useState('Create trip');
+
+
+    const [showBus, setShowBus] = useState(false);
+////////////
+    const handleCreateBusClick = () => {
+      setShowBus(true);
+    };////
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -142,6 +153,7 @@ function Dashboard() {
     const removeuserInfo = () => {
         localStorage.removeItem('userInformation');
         setUserInfo(null);
+        navigate('/');
     };
 
     useEffect(() => {
@@ -241,7 +253,7 @@ function Dashboard() {
                 </List>
                 <Divider />
                 <List>
-                    {['Create stations' , 'Create users'].map((text, index) => (
+                    {['Create stations', 'Create users'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
@@ -278,12 +290,16 @@ function Dashboard() {
                 {currentContent === 'Create trip' && (
                     <Typography paragraph>
                         <Grid container>
-                            <Grid item xs>
-                                <AllTrips />
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <AllTrips />
+                                </Box>
                             </Grid>
-                            <Divider orientation="vertical" flexItem>Create Trip</Divider>
-                            <Grid item xs>
-                                <SingleTripForm />
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <Divider orientation="vertical" flexItem>Create Trip</Divider>
+                                    <SingleTripForm />
+                                </Box>
                             </Grid>
                         </Grid>
                     </Typography>
@@ -291,24 +307,33 @@ function Dashboard() {
                 {currentContent === 'Create bus' && (
                     <Typography paragraph>
                         <Grid container>
-                            <Grid item xs>
-                                <AllBuses />
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <AllBuses />
+                                    <Divider orientation="vertical" flexItem><Button variant="text" onClick={handleCreateBusClick}>Create Bus</Button></Divider>
+                                </Box>
                             </Grid>
-                            <Divider orientation="vertical" flexItem>Create Bus</Divider>
-                            <Grid item xs>
-                                <Bus/>
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    {showBus && <Bus />}
+                                </Box>
                             </Grid>
-                        </Grid>                    </Typography>
+                        </Grid>
+                    </Typography>
                 )}
                 {currentContent === 'Create driver' && (
                     <Typography paragraph>
                         <Grid container>
-                            <Grid item xs>
-                                <AllDrivers />
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <AllDrivers />
+                                </Box>
                             </Grid>
-                            <Divider orientation="vertical" flexItem>Create Driver</Divider>
-                            <Grid item xs>
-                                <Driver />
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <Divider orientation="vertical" flexItem>Create Driver</Divider>
+                                    <Driver />
+                                </Box>
                             </Grid>
                         </Grid>
                     </Typography>
@@ -316,44 +341,55 @@ function Dashboard() {
                 {currentContent === 'Create profile' && (
                     <Typography paragraph>
                         <Grid container>
-                            <Grid item xs>
-                                <AllProfiles />
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <AllProfiles />
+                                </Box>
                             </Grid>
-                            <Divider orientation="vertical" flexItem>Create Profile</Divider>
-                            <Grid item xs>
-                                <Profile />
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <Divider orientation="vertical" flexItem>Create Profile</Divider>
+                                    <Profile />
+                                </Box>
                             </Grid>
                         </Grid>
                     </Typography>
                 )}
                 {currentContent === 'Create stations' && (
                     <Typography paragraph>
-                         <Grid container>
-                            <Grid item xs>
-                                <AllStations />
+                        <Grid container>
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <AllStations />
+                                </Box>
                             </Grid>
-                            <Divider orientation="vertical" flexItem>Create Station</Divider>
-                            <Grid item xs>
-                                <Station />
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <Divider orientation="vertical" flexItem>Create Station</Divider>
+                                    <Station />
+                                </Box>
                             </Grid>
-                        </Grid>                        
+                        </Grid>
                     </Typography>
                 )}
                 {currentContent === 'Create users' && (
                     <Typography paragraph>
-                         <Grid container>
-                            <Grid item xs>
-                                <AllUsers/>
+                        <Grid container>
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <AllUsers />
+                                </Box>
                             </Grid>
-                            <Divider orientation="vertical" flexItem>Create User</Divider>
-                            <Grid item xs>
-                                <User />
+                            <Grid item xs={6}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <Divider orientation="vertical" flexItem>Create User</Divider>
+                                    <User />
+                                </Box>
                             </Grid>
-                        </Grid>  
+                        </Grid>
                     </Typography>
                 )}
             </Box>
-
         </Box >
     );
 }
