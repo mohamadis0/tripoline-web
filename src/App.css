@@ -1,39 +1,54 @@
-.form-row {
-  margin-bottom: 10px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-input[type="text"],
-input[type="time"],
-select {
-  width: 100%;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-button {
-  padding: 10px 20px;
-  background-color: #4caf50;
-  color: #fff;
+.bus-table .delete-button {
+  background-color: red;
+  color: white;
+  padding: 6px 12px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-button:hover {
-  background-color: #45a049;
+.bus-table .delete-button:hover {
+  background-color: darkred;
+}
+/* Global styles for select elements */
+select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.form-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+/* Global styles for input elements */
+input[type="text"],
+input[type="number"],
+input[type="datetime-local"] {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Global styles for option elements */
+option {
+  padding: 8px;
+}
+
+.UpdateForm {
+  position: absolute;
+  top: 200px;
+  left: 200px;
+
+  margin: auto;
+  height: 500px;
+  width: 400px;
+  padding: 30px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  overflow-y: auto;
 }
 
 .select {
@@ -69,34 +84,12 @@ button:hover {
 .select .select__indicator-separator {
   display: none;
 }
-input[type="number"] {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
 
-input[type="number"]:focus {
-  outline: none;
-  border-color: #66afe9;
-  box-shadow: 0 0 5px #66afe9;
-}
 .profile-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-}
-
-form {
-  margin: auto;
-  width: 400px;
-  padding: 20px;
-  background-color: #f1f1f1;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
@@ -106,7 +99,7 @@ h2 {
 
 label {
   display: block;
-  margin-bottom: 8px;
+  padding-bottom: 10px;
 }
 
 input {
@@ -117,12 +110,10 @@ input {
   border-radius: 4px;
 }
 
-
-
-.containerForprofile{
-display: flex;
-align-items: center;
-justify-content: space-evenly;  
+.containerForprofile {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
 .table-responsive {
   overflow-x: auto;
@@ -164,8 +155,8 @@ justify-content: space-evenly;
     white-space: nowrap;
   }
 
-  .trip-table th:nth-child(n+2),
-  .trip-table td:nth-child(n+2) {
+  .trip-table th:nth-child(n + 2),
+  .trip-table td:nth-child(n + 2) {
     display: none;
   }
 
@@ -176,32 +167,25 @@ justify-content: space-evenly;
     margin-right: 4px;
   }
 }
-
-.bus-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+/* Global styles for buttons */
+button {
+  padding: 12px 24px;
+  border-radius: 4px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #007bff;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.bus-table th,
-.bus-table td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  text-align: left;
+/* Hover styles for buttons */
+button:hover {
+  background-color: #0056b3;
 }
 
-.bus-table th {
-  background-color: #f2f2f2;
-}
-
-.bus-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.bus-table tbody tr:hover {
-  background-color: #e6e6e6;
-}
-
-.table-responsive {
-  overflow-x: auto;
+/* Active (clicked) styles for buttons */
+button:active {
+  background-color: #003080;
 }

@@ -2,12 +2,50 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Table, TableHead, TableBody, TableRow, TableCell, TablePagination } from '@mui/material';
+import { Table, TableHead, TableBody, TableRow, TableCell, TablePagination, Modal, Box, Typography, Button } from '@mui/material';
+
+const StationDeletionModal = ({ stationId, handleDeleteStation, modalState, setModalState }) => {
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  return (
+    <div>
+      <Modal
+        open={modalState}
+        onClose={() => setModalState(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Are you sure you want to delete this station?
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            This action cannot be undone.
+          </Typography>
+          <Button onClick={() => setModalState(false)}>Cancel</Button>
+          <Button onClick={() => handleDeleteStation(stationId)}>Delete</Button>
+        </Box>
+      </Modal>
+    </div>
+  );
+};
 
 const AllStations = () => {
   const [stationData, setStationData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [modalState, setModalState] = useState(false);
+  const [selectedStationId, setSelectedStationId] = useState('');
 
   const getAllStations = async () => {
     try {
@@ -24,9 +62,11 @@ const AllStations = () => {
       await axios.delete(`http://localhost:3000/api/stations/${stationId}`);
       getAllStations();
       toast.success('Station deleted successfully');
+      setModalState(false)
     } catch (error) {
       console.log(error);
       toast.error('Error deleting station');
+      setModalState(false)
     }
   };
 
@@ -45,6 +85,10 @@ const AllStations = () => {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, stationData.length - page * rowsPerPage);
 
+  const handleDeleteStationConfirmation = (stationId) => {
+    setSelectedStationId(stationId);
+    setModalState(true);
+  };
 
   return (
     <div className="table-responsive">
@@ -69,7 +113,7 @@ const AllStations = () => {
               <TableCell>
                 <button
                   style={{ backgroundColor: 'red', color: 'white' }}
-                  onClick={() => deleteStation(station._id)}
+                  onClick={() => handleDeleteStationConfirmation(station._id)}
                 >
                   Delete
                 </button>
@@ -91,6 +135,12 @@ const AllStations = () => {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+      <StationDeletionModal
+        stationId={selectedStationId}
+        handleDeleteStation={deleteStation}
+        modalState={modalState}
+        setModalState={setModalState}
       />
       <ToastContainer />
     </div>

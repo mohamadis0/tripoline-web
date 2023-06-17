@@ -15,7 +15,6 @@ const SingleTripForm = () => {
     const [buses, setBuses] = useState([]);
     const [associatedBuses, setAssociatedBuses] = useState([]);
     const [stations, setStations] = useState([]);
-    const [selectedStations, setSelectedStations] = useState([]);
 
     const getBuses = async () => {
         try {
@@ -54,7 +53,6 @@ const SingleTripForm = () => {
             tripLine,
             tripStatus,
             associatedBuses: associatedBuses.map((bus) => bus.value),
-            stations: selectedStations.map((station) => station.value),
         };
 
         axios
@@ -76,7 +74,6 @@ const SingleTripForm = () => {
         setTripLine('');
         setTripStatus('upcoming');
         setAssociatedBuses([]);
-        setSelectedStations([]);
     };
 
     return (
@@ -144,10 +141,12 @@ const SingleTripForm = () => {
                     <input type="text" value={tripLine} onChange={(e) => setTripLine(e.target.value)} required />
                 </label>
             </div>
-            <div className="form-row">
+            <div className="form-row" style={{display:'flex', alignItems:'center',justifyContent:'center'}}>
                 <label>
                     Status:
-                    <div>
+                    <br/>
+                    <br/>
+                    <div  style={{display:'flex', alignItems:'center',justifyContent:'center'}} >
                         <label>
                             <input type="radio" name="tripStatus" value="upcoming" checked={tripStatus === 'upcoming'} onChange={() => setTripStatus('upcoming')} />
                             Upcoming
@@ -167,6 +166,8 @@ const SingleTripForm = () => {
                     </div>
                 </label>
             </div>
+            <br/>
+                    <br/>
             <div className="form-row">
                 <label htmlFor="selectedBuses" className="form-label">
                     Associated Buses:
@@ -186,25 +187,7 @@ const SingleTripForm = () => {
                     />
                 </label>
             </div>
-            <div className="form-row">
-                <label htmlFor="selectedStations" className="form-label">
-                    Stations:
-                    <Select
-                        id="selectedStations"
-                        value={selectedStations}
-                        isMulti
-                        name="selectedStations"
-                        options={stations.map((station) => ({
-                            value: station._id,
-                            label: `${station.stationName} (${station.stationNumber})`,
-                        }))}
-                        onChange={(selectedOptions) => setSelectedStations(selectedOptions)}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        required
-                    />
-                </label>
-            </div>
+ 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <button type="submit">Add Trip</button>
             </div>

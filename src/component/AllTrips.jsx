@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
+
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
+
+import BasicModal from './Modal';
+import UpdateTripForm from './edit/UpdateTrip';
 
 
 function formatDateTime(dateTimeString) {
@@ -19,10 +23,19 @@ function formatDateTime(dateTimeString) {
   return formattedDateTime;
 }
 
+
+
+
+
+
+
 const SingleTrip = () => {
   const [tripData, setTripData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [modalState, setModalState] = useState(false);
+  const [editingTripId, setEditingTripId] = useState(null);
+
 
   const getSingleTrip = async () => {
     try {
@@ -43,6 +56,7 @@ const SingleTrip = () => {
       await axios.delete(`http://localhost:3000/api/trips/${tripId}`);
       getSingleTrip();
       toast.success('Trip deleted successfully');
+      setModalState(!modalState)
     } catch (error) {
       console.log(error);
       toast.error('Error deleting trip');
@@ -60,6 +74,7 @@ const SingleTrip = () => {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, tripData.length - page * rowsPerPage);
 
+  const [edit, setEdit] = useState(false);
 
   return (
     <div className="table-responsive">
@@ -88,7 +103,9 @@ const SingleTrip = () => {
                 <TableCell>{trip?.tripName}</TableCell>
                 <TableCell>{trip?.tripLocation?.stationName}</TableCell>
                 <TableCell>{trip?.tripDestination?.stationName}</TableCell>
-                <TableCell>{trip?.associatedBuses[index]?.Busname ? trip?.associatedBuses[index]?.Busname : 'no bus'}</TableCell>
+                <TableCell>
+                  {trip?.associatedBuses[index]?.Busname ? trip?.associatedBuses[index]?.Busname : 'no bus'}
+                </TableCell>
                 <TableCell>{trip.tripStatus}</TableCell>
                 <TableCell>{formatDateTime(trip?.departureTime)}</TableCell>
                 <TableCell>{formatDateTime(trip?.estimatedDeparture)}</TableCell>
@@ -96,10 +113,36 @@ const SingleTrip = () => {
                 <TableCell>{formatDateTime(trip?.estimatedArrival)}</TableCell>
                 <TableCell>
                   <button
-                    style={{ backgroundColor: "red", color: "white" }}
-                    onClick={() => handleDeleteTrip(trip._id)}>Delete</button>
+                    style={{ backgroundColor: 'red', color: 'white' }}
+                    onClick={() => setModalState(true)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    style={{ backgroundColor: 'green', color: 'white' }}
+                    onClick={() => {
+                      setEditingTripId(trip._id);
+                      setEdit(true);
+                    }}
+                  >
+                    Edit
+                  </button>
+
                 </TableCell>
+                <BasicModal
+                  handleDeleteTrip={handleDeleteTrip}
+                  setModalState={setModalState}
+                  modalState={modalState}
+                  tripId={trip._id}
+                />
+
+
+
               </TableRow>
+
+
+
+
             ))}
             {emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
@@ -118,8 +161,18 @@ const SingleTrip = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+      {edit && (
+        <UpdateTripForm
+          edit={edit}
+          setEdit={setEdit}
+          tripId={editingTripId}
+        />
+      )}
+
+
       <ToastContainer />
     </div>
+
   );
 };
 
