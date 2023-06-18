@@ -36,11 +36,13 @@ import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
 import { Button, SvgIcon } from '@mui/material';
 import Profile from './Profile';
 import Station from './Station';
-
+import PersonPinIcon from '@mui/icons-material/PersonPin';
+import AddLocationAltIcon from '@mui/icons-material/AddLocationAlt';
 import MuiGrid from '@mui/material/Grid';
 import User from './User';
 import AllUsers from './AllUsers';
 import { Container } from '@mui/material';
+import UpdateTripForm from './edit/UpdateTrip';
 
 
 const Grid = styled(MuiGrid)(({ theme }) => ({
@@ -120,17 +122,38 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 function Dashboard() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [currentContent, setCurrentContent] = React.useState('Create trip');
 
 
     const [showBus, setShowBus] = useState(false);
-////////////
+    const [showTrip, setShowTrip] = useState(false);
+    const [showDriver, setShowDriver] = useState(false);
+    const [showStation, setShowStation] = useState(false);
+    const [showProfile, setShowProfile] = useState(false);
+    const [showUser, setShowUser] = useState(false);
+
     const handleCreateBusClick = () => {
-      setShowBus(true);
-    };////
+        setShowBus(true);
+    };
+    const handleCreateTripClick = () => {
+        setShowTrip(true);
+        setEdit(false)
+    };
+    const handleCreateDriverClick = () => {
+        setShowDriver(true);
+    };
+    const handleCreateStationClick = () => {
+        setShowStation(true);
+    };
+    const handleCreateProfileClick = () => {
+        setShowProfile(true);
+    };
+    const handleCreateUserClick = () => {
+        setShowUser(true);
+    };
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -149,6 +172,8 @@ function Dashboard() {
 
     const [userInfo, setUserInfo] = useState(null);
 
+    const [edit, setEdit] = useState(false);
+    const [editingTripId, setEditingTripId] = useState(null);
 
     const removeuserInfo = () => {
         localStorage.removeItem('userInformation');
@@ -173,8 +198,7 @@ function Dashboard() {
                     <Typography variant="h6" noWrap component="div">
                         Hello {userInfo.data.user.username}
                     </Typography>
-
-                    <Button variant="contained" color="primary" onClick={removeuserInfo}>
+                    <Button variant="outlined" style={{ color: 'white' }} onClick={removeuserInfo}>
                         Logout
                     </Button>
                 </div>
@@ -271,12 +295,8 @@ function Dashboard() {
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    {index === 0 && <AddRoadIcon sx={{ color: '#004C64' }} />}
-                                    {index === 1 && <AddRoadIcon sx={{ color: '#004C64' }} />}
-                                    {/*{index === 2 && <AddRoadIcon sx={{ color: '#004C64' }} />}
-                                    {index === 3 && <AddRoadIcon sx={{ color: '#004C64' }} />}
-                                    {index === 4 && <AddRoadIcon sx={{ color: '#004C64' }} />}
-                                    {index === 5 && <AddRoadIcon sx={{ color: '#004C64' }} />} */}
+                                    {index === 0 && <AddLocationAltIcon sx={{ color: '#004C64' }} />}
+                                    {index === 1 && <PersonPinIcon sx={{ color: '#004C64' }} />}
                                 </ListItemIcon>
                                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
                             </ListItemButton>
@@ -290,8 +310,22 @@ function Dashboard() {
                 {currentContent === 'Create trip' && (
                     <Typography paragraph>
                         <Grid container>
-                                    <AllTrips />
-                            <Grid item xs={6}>
+                            <Grid item xs={8}  sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    <AllTrips setEdit={setEdit} setEditingTripId={setEditingTripId} />
+                                    <Divider orientation="vertical" flexItem><Button variant="text" onClick={handleCreateTripClick}>Create Trip</Button></Divider>
+                                </Box>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                    {edit ? (
+                                        <UpdateTripForm
+                                            edit={edit}
+                                            setEdit={setEdit}
+                                            tripId={editingTripId}
+                                        />
+                                    ) : showTrip && <SingleTripForm />}
+                                </Box>
                             </Grid>
                         </Grid>
                     </Typography>
@@ -302,7 +336,9 @@ function Dashboard() {
                             <Grid item xs={6}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <AllBuses />
-                                    <Divider orientation="vertical" flexItem><Button variant="text" onClick={handleCreateBusClick}>Create Bus</Button></Divider>
+                                    <Divider orientation="vertical" flexItem>
+                                        <Button variant="text" onClick={handleCreateBusClick}>Create Bus</Button>
+                                    </Divider>
                                 </Box>
                             </Grid>
                             <Grid item xs={6}>
@@ -319,12 +355,12 @@ function Dashboard() {
                             <Grid item xs={6}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <AllDrivers />
+                                    <Divider orientation="vertical" flexItem><Button variant="text" onClick={handleCreateDriverClick}>Create Driver</Button></Divider>
                                 </Box>
                             </Grid>
                             <Grid item xs={6}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                    <Divider orientation="vertical" flexItem>Create Driver</Divider>
-                                    <Driver />
+                                    {showDriver && <Driver />}
                                 </Box>
                             </Grid>
                         </Grid>
@@ -336,12 +372,12 @@ function Dashboard() {
                             <Grid item xs={6}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <AllProfiles />
+                                    <Divider orientation="vertical" flexItem><Button variant="text" onClick={handleCreateProfileClick}>Create Profile</Button></Divider>
                                 </Box>
                             </Grid>
                             <Grid item xs={6}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                    <Divider orientation="vertical" flexItem>Create Profile</Divider>
-                                    <Profile />
+                                    {showProfile && <Profile />}
                                 </Box>
                             </Grid>
                         </Grid>
@@ -353,12 +389,12 @@ function Dashboard() {
                             <Grid item xs={6}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <AllStations />
+                                    <Divider orientation="vertical" flexItem><Button variant="text" onClick={handleCreateStationClick}>Create Station</Button></Divider>
                                 </Box>
                             </Grid>
                             <Grid item xs={6}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                    <Divider orientation="vertical" flexItem>Create Station</Divider>
-                                    <Station />
+                                    {showStation && <Station />}
                                 </Box>
                             </Grid>
                         </Grid>
@@ -370,12 +406,12 @@ function Dashboard() {
                             <Grid item xs={6}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                     <AllUsers />
+                                    <Divider orientation="vertical" flexItem><Button variant="text" onClick={handleCreateUserClick}>Create User</Button></Divider>
                                 </Box>
                             </Grid>
                             <Grid item xs={6}>
                                 <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                    <Divider orientation="vertical" flexItem>Create User</Divider>
-                                    <User />
+                                    {showUser && <User />}
                                 </Box>
                             </Grid>
                         </Grid>
