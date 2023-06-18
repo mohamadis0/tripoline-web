@@ -8,6 +8,9 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import BasicModal from './Modal';
 import UpdateTripForm from './edit/UpdateTrip';
 
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 function formatDateTime(dateTimeString) {
   const options = {
@@ -24,17 +27,11 @@ function formatDateTime(dateTimeString) {
 }
 
 
-
-
-
-
-
-const SingleTrip = () => {
+const SingleTrip = (props) => {
   const [tripData, setTripData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [modalState, setModalState] = useState(false);
-  const [editingTripId, setEditingTripId] = useState(null);
 
 
   const getSingleTrip = async () => {
@@ -74,7 +71,7 @@ const SingleTrip = () => {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, tripData.length - page * rowsPerPage);
 
-  const [edit, setEdit] = useState(false);
+
 
   return (
     <div className="table-responsive">
@@ -112,22 +109,50 @@ const SingleTrip = () => {
                 <TableCell>{formatDateTime(trip?.arrivalTime)}</TableCell>
                 <TableCell>{formatDateTime(trip?.estimatedArrival)}</TableCell>
                 <TableCell>
-                  <button
-                    style={{ backgroundColor: 'red', color: 'white' }}
+                  {/* <button
+                    style={{
+                      width: '100px',
+                      height: '40px',
+                      backgroundColor: 'red',
+                      color: 'white',
+                      margin: '1px',
+                    }}
                     onClick={() => setModalState(true)}
                   >
                     Delete
-                  </button>
-                  <button
-                    style={{ backgroundColor: 'green', color: 'white' }}
+                  </button> */}
+                  <IconButton
+                    aria-label="delete"
+                    color="primary"
+                    onClick={() => setModalState(true)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                  {/* <button
+                    style={{
+                      width: '100px',
+                      height: '40px',
+                      backgroundColor: 'green',
+                      color: 'white',
+                      margin: '1px',
+                    }}
                     onClick={() => {
                       setEditingTripId(trip._id);
                       setEdit(true);
                     }}
                   >
                     Edit
-                  </button>
-
+                  </button> */}
+                  <IconButton
+                    aria-label="edit"
+                    color="secondary"
+                    onClick={() => {
+                      props.setEditingTripId(trip._id);
+                      props.setEdit(true);
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
                 </TableCell>
                 <BasicModal
                   handleDeleteTrip={handleDeleteTrip}
@@ -135,13 +160,7 @@ const SingleTrip = () => {
                   modalState={modalState}
                   tripId={trip._id}
                 />
-
-
-
               </TableRow>
-
-
-
 
             ))}
             {emptyRows > 0 && (
@@ -161,13 +180,7 @@ const SingleTrip = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      {edit && (
-        <UpdateTripForm
-          edit={edit}
-          setEdit={setEdit}
-          tripId={editingTripId}
-        />
-      )}
+     
 
 
       <ToastContainer />
