@@ -76,7 +76,6 @@ const SingleTrip = (props) => {
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, tripData.length - page * rowsPerPage);
-
   const [edit, setEdit] = useState(false);
 
   return (
