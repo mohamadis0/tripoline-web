@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function Driver() {
+function Driver({ open, close }) {
+
   const [driver, setDriver] = useState({
     DriverName: '',
     DriverPhone: '',
@@ -24,6 +25,7 @@ function Driver() {
       .catch((error) => {
         console.error('Error adding driver:', error);
       });
+    close(!open)
   };
 
   const handleChange = (e) => {
@@ -53,75 +55,90 @@ function Driver() {
 
   return (
     <div>
-      <form onSubmit={handleDriverSubmit}>
-        <label>
-          Driver Name:
-          <input
-            type="text"
-            name="DriverName"
-            value={driver.DriverName}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Driver phone:
-          <input
-            type="text"
-            name="DriverPhone"
-            value={driver.DriverPhone}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Driver age:
-          <input
-            type="number"
-            min={0}
-            name="DriverAge"
-            value={driver.DriverAge}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Driver card:
-          <input
-            type="file"
-            name="DriverCard"
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Drive card-Id:
-          <input
-            type="text"
-            name="DriverCardId"
-            value={driver.DriverCardId}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Driver address:
-          <input
-            type="text"
-            name="DriverAddress"
-            value={driver.DriverAddress}
-            onChange={handleChange}
-            required
-          />
-        </label>
-        <br />
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <button type="submit">Add Driver</button>
+      <form onSubmit={handleDriverSubmit} className='form-container' style={{ marginRight:100}}>
+        <div className="form-column" style={{ width: '50%', padding: '0 25px', marginTop: 15 }}>
+          <div className="form-row" >
+            <label className="label">
+              Driver Name:
+            </label>
+            <input
+              type="text"
+              name="DriverName"
+              value={driver.DriverName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-row" >
+            <label className="label">
+              Driver phone:
+            </label>
+            <input
+              type="text"
+              name="DriverPhone"
+              value={driver.DriverPhone}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-row">
+            <label className="label">
+              Driver age:
+            </label>
+            <input
+              type="number"
+              min={0}
+              name="DriverAge"
+              value={driver.DriverAge}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+        <div className="form-column" style={{ width: '50%', marginTop: 15 }}>
+          <div className="form-row">
+            <label className="label">
+              Driver card:
+            </label>
+            <input
+              type="file"
+              name="DriverCard"
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-row">
+            <label className="label">
+              Drive card-Id:
+            </label>
+            <input
+              type="text"
+              name="DriverCardId"
+              value={driver.DriverCardId}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-row">
+            <label className="label">
+              Driver address:
+            </label>
+            <input
+              type="text"
+              name="DriverAddress"
+              value={driver.DriverAddress}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+        <div className="submitdiv" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+          <button type="submit" className="submit-button" style={{ width: '200px', marginLeft:80 }}>
+            Add Driver
+          </button>
+          <button type="button" className="delete-button" onClick={() => close(!open)} style={{ marginLeft: 30, width: '200px' }}>
+            Cancel
+          </button>
         </div>
       </form>
     </div>

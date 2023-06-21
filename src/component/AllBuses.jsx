@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
+import Loader from './Loader'
 import 'react-toastify/dist/ReactToastify.css';
 import {
   Table,
@@ -16,6 +17,7 @@ import {
   Typography,
   Button,
 } from '@mui/material';
+
 
 const BusDeletionModal = ({ busId, handleDeleteBus, modalState, setModalState }) => {
   const style = {
@@ -55,6 +57,7 @@ const BusDeletionModal = ({ busId, handleDeleteBus, modalState, setModalState })
 
 const AllBuses = () => {
   const [busData, setBusData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [modalState, setModalState] = useState(false);
@@ -62,23 +65,29 @@ const AllBuses = () => {
 
   const getAllBuses = async () => {
     try {
+      setLoading(true);
       const res = await axios.get('http://localhost:3000/api/buses');
       setBusData(res.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
   const deleteBus = async (busId) => {
     try {
+      setLoading(true);
       await axios.delete(`http://localhost:3000/api/buses/${busId}`);
-      getAllBuses();
+      await getAllBuses();
       toast.success('Bus deleted successfully');
       setModalState(false);
     } catch (error) {
       console.log(error);
       toast.error('Error deleting bus');
       setModalState(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,48 +113,52 @@ const AllBuses = () => {
 
   return (
     <div className="table-responsive">
-      <TableContainer component={Paper}>
-        <Table className="bus-table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Bus Name</TableCell>
-              <TableCell>Capacity</TableCell>
-              <TableCell>Driver Name</TableCell>
-              <TableCell>Driver Card Id</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(rowsPerPage > 0 ? busData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : busData).map(
-              (bus, index) => (
-                <TableRow key={index}>
-                  <TableCell>{bus.Busname}</TableCell>
-                  <TableCell>{bus.numberOfSeats}</TableCell>
-                  <TableCell>
-                    {bus?.busDriver?.DriverName ? bus?.busDriver?.DriverName : 'no driver'}
-                  </TableCell>
-                  <TableCell>
-                    {bus?.busDriver?.DriverCardId ? bus?.busDriver?.DriverCardId : 'no driver'}
-                  </TableCell>
-                  <TableCell>
-                    <button
-                      className="delete-button"
-                      onClick={() => handleDeleteBusConfirmation(bus._id)}
-                    >
-                      Delete
-                    </button>
-                  </TableCell>
-                </TableRow>
-              )
-            )}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={5} />
+      {loading ? (
+        <Loader />
+      ) : (
+        <TableContainer component={Paper}>
+          <Table className="bus-table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Bus Name</TableCell>
+                <TableCell>Capacity</TableCell>
+                <TableCell>Driver Name</TableCell>
+                <TableCell>Driver Card Id</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {(rowsPerPage > 0 ? busData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : busData).map(
+                (bus, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{bus.Busname}</TableCell>
+                    <TableCell>{bus.numberOfSeats}</TableCell>
+                    <TableCell>
+                      {bus?.busDriver?.DriverName ? bus?.busDriver?.DriverName : 'no driver'}
+                    </TableCell>
+                    <TableCell>
+                      {bus?.busDriver?.DriverCardId ? bus?.busDriver?.DriverCardId : 'no driver'}
+                    </TableCell>
+                    <TableCell>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDeleteBusConfirmation(bus._id)}
+                      >
+                        Delete
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                )
+              )}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={5} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component="div"

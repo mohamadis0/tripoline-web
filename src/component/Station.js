@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Station = () => {
+const Station = ({ open, close }) => {
     const [stationName, setStationName] = useState('');
     const [stationNumber, setStationNumber] = useState('');
     const [stationStatus, setStationStatus] = useState('');
-    const [tripId, setTripId] = useState(''); 
+    const [tripId, setTripId] = useState('');
     const [stationTime, setStationTime] = useState('');
     const [timeUnit, setTimeUnit] = useState('minutes');
     const [trips, setTrips] = useState([]);
@@ -41,6 +41,7 @@ const Station = () => {
         } catch (error) {
             console.error('Error creating station:', error);
         }
+        close(!open)
     };
 
     const resetStationFields = () => {
@@ -78,77 +79,93 @@ const Station = () => {
 
     return (
         <div>
-            <form onSubmit={handleStationSubmit}>
-                <label>
-                    Station Name:
-                    <input
-                        type="text"
-                        name="stationName"
-                        value={stationName}
-                        onChange={handleStationNameChange}
-                        required
-                    />
-                </label>
+            <form onSubmit={handleStationSubmit} className='form-container' style={{ marginRight:150}}>
+                <div className="form-column" style={{ width: '50%', padding: '0 25px', marginTop: 15 }}>
+                    <div className="form-row" >
+                        <label className="label">
+                            Station Name:
+                        </label>
+                        <input
+                            type="text"
+                            name="stationName"
+                            value={stationName}
+                            onChange={handleStationNameChange}
+                            required
+                        />
+                    </div>
+                    <div className="form-row" >
+                        <label className="label">
+                            Station Number:
+                        </label>
+                        <input
+                            type="text"
+                            name="stationNumber"
+                            value={stationNumber}
+                            onChange={handleStationNumberChange}
+                            required
+                        />
+                    </div>
+                    <div className="form-row" >
+                        <label className="label">
+                            Station Status:
+                        </label>
+                        <select
+                            name="stationStatus"
+                            value={stationStatus}
+                            onChange={handleStationStatusChange}
+                            required
+                            className="select-input"
+                        >
+                            <option value="">-----</option>
+                            <option value="passed">Passed</option>
+                            <option value="arrived">Arrived</option>
+                            <option value="waiting">Waiting</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="form-column" style={{ width: '50%', padding: '0 25px', marginTop: 15 }}>
+                    <div className="form-row">
+                        <label className="label">
+                            Station Time:
+                        </label>
+                        <input
+                            type="text"
+                            name="stationTime"
+                            value={stationTime}
+                            onChange={handleStationTimeChange}
+                            required
+                        />
+                        <select
+                            name="timeUnit"
+                            value={timeUnit}
+                            onChange={handleTimeUnitChange}
+                        >
+                            <option value="minutes">Minutes</option>
+                            <option value="hours">Hours</option>
+                        </select>
+                    </div>
+                    <div className="form-row">
+                        <label className="label">
+                            Select Trip:
+                        </label>
+                        <select name="tripId" value={tripId || ""} onChange={handleTripIdChange}>
+                            <option value="">Select a Trip</option>
+                            {trips.map((trip) => (
+                                <option key={trip._id} value={trip._id}>
+                                    {trip.tripName}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
                 <br />
-                <label>
-                    Station Number:
-                    <input
-                        type="text"
-                        name="stationNumber"
-                        value={stationNumber}
-                        onChange={handleStationNumberChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    Station Status:
-                    <select
-                        name="stationStatus"
-                        value={stationStatus}
-                        onChange={handleStationStatusChange}
-                        required
-                    >
-                        <option value="">-----</option>
-                        <option value="passed">Passed</option>
-                        <option value="arrived">Arrived</option>
-                        <option value="waiting">Waiting</option>
-                    </select>
-                </label>
-                <br />
-                <label>
-                    Station Time:
-                    <input
-                        type="text"
-                        name="stationTime"
-                        value={stationTime}
-                        onChange={handleStationTimeChange}
-                        required
-                    />
-                    <select
-                        name="timeUnit"
-                        value={timeUnit}
-                        onChange={handleTimeUnitChange}
-                    >
-                        <option value="minutes">Minutes</option>
-                        <option value="hours">Hours</option>
-                    </select>
-                </label>
-                <br />
-                <label>
-                    Select Trip:
-                    <select name="tripId" value={tripId || ""} onChange={handleTripIdChange}>
-                        <option value="">Select a Trip</option>
-                        {trips.map((trip) => (
-                            <option key={trip._id} value={trip._id}>
-                                {trip.tripName}
-                            </option>
-                        ))}
-                    </select>
-                </label>
-                <br />
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <button type="submit">Create Station</button>
+                <div className="submitdiv" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+                    <button type="submit" className="submit-button" style={{ width: '200px', marginLeft: 120 }}>
+                        Add Station
+                    </button>
+                    <button type="button" className="delete-button" onClick={() => close(!open)} style={{ marginLeft: 30, width: '200px' }}>
+                        Cancel
+                    </button>
                 </div>
             </form>
         </div>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function Bus() {
+function Bus({ open, close }) {
+
   const [busName, setBusName] = useState('');
   const [numberOfSeats, setNumberOfSeats] = useState('');
   const [busDriver, setBusDriver] = useState('');
@@ -36,6 +37,7 @@ function Bus() {
     } catch (error) {
       console.log(error);
     }
+    close(!open)
   };
 
   const handleBusNameChange = (e) => {
@@ -58,36 +60,54 @@ function Bus() {
 
   return (
     <div>
-      <form onSubmit={handleBusSubmit}>
-        <label>
-          Bus Name:
-          <input type="text" value={busName} onChange={handleBusNameChange} required />
-        </label>
-        <br />
-        <label>
-          Number of seats:
-          <input
-            type="number"
-            value={numberOfSeats}
-            onChange={handleNumberOfSeatsChange}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Bus driver:
-          <select value={busDriver} onChange={handleBusDriverChange} required>
-            <option value="">Select driver</option>
-            {drivers.map((driver) => (
-              <option key={driver._id} value={driver._id}>
-                {driver.DriverName} {driver.DriverCardId}
-              </option>
-            ))}
-          </select>
-        </label>
-        <br />
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          <button type="submit">Add Bus</button>
+      <form onSubmit={handleBusSubmit} className=" form-container" style={{ marginRight:120}}>
+        <div className="form-column" style={{ width: '100%', padding: '0 25px'}}>
+          <div className="form-row" style={{marginLeft:30}}>
+            <label htmlFor="busName" className="label">Bus Name:</label>
+            <input
+              type="text"
+              id="busName"
+              value={busName}
+              onChange={handleBusNameChange}
+              required
+            />
+          </div>
+          <div className="form-row" style={{marginLeft:30}}>
+            <label htmlFor="numberOfSeats" className="label">Number of Seats:</label>
+            <input
+              type="number"
+              id="numberOfSeats"
+              value={numberOfSeats}
+              onChange={handleNumberOfSeatsChange}
+              required
+            />
+          </div>
+          <div className="form-row" style={{marginLeft:30}}>
+            <label htmlFor="busDriver" className="label">Bus Driver:</label>
+            <select
+              id="busDriver"
+              value={busDriver}
+              onChange={handleBusDriverChange}
+              className="select-input"
+              required
+            >
+              <option value="">Select driver</option>
+              {drivers.map((driver) => (
+                <option key={driver._id} value={driver._id}>
+                  {driver.DriverName} {driver.DriverCardId}
+                </option>
+              ))}
+            </select>
+          </div>
+          <br />
+          <div className="submitdiv" style={{ display: 'flex', justifyContent: 'center' }}>
+            <button type="submit" className="submit-button" style={{ width: '100px' }}>
+              Add Bus
+            </button>
+            <button type="button" className="delete-button" onClick={() => close(!open)} style={{ marginLeft: '10px', width: '100px' }}>
+              Cancel
+            </button>
+          </div>
         </div>
       </form>
     </div>

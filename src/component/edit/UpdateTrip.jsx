@@ -95,189 +95,197 @@ const UpdateTripForm = ({ edit, setEdit, tripId }) => {
     } = singleTrip;
 
     return (
-            <form onSubmit={handleSubmit} className="UpdateForm" style={{left:1100,top:100}}>
-                <ToastContainer />
-                <h2>Update the trip</h2>
+        <form onSubmit={handleSubmit} className="form-container" style={{ left: 1100, top: 100 }}>
+            <ToastContainer />
+            <div className="form-column" style={{ width: '50%', padding: '0 25px' }}>
                 <div className="form-row">
-                    <label>
+                    <label className='form-row'>
+                        <h2>Update the trip</h2>
+                    </label>
+                </div>
+                <div className="form-row">
+                    <label className="label">
                         Trip Name:
-                        <input
-                            type="text"
-                            value={tripName || ''}
-                            onChange={(e) => setSingleTrip({ ...singleTrip, tripName: e.target.value })}
-                            required
-                        />
                     </label>
+                    <input
+                        type="text"
+                        value={tripName || ''}
+                        onChange={(e) => setSingleTrip({ ...singleTrip, tripName: e.target.value })}
+                        required
+                    />
                 </div>
                 <div className="form-row">
-                    <label>
+                    <label className="label">
                         Trip Location:
-                        <select
-                            value={tripLocation || ''}
-                            onChange={(e) => setSingleTrip({ ...singleTrip, tripLocation: e.target.value })}
-                            required
-                        >
-                            <option value="">Select location</option>
-                            {stations.map((station) => (
-                                <option key={station._id} value={station._id}>
-                                    {station.stationName} ({station.stationNumber})
-                                </option>
-                            ))}
-                        </select>
                     </label>
+                    <select
+                        value={tripLocation || ''}
+                        onChange={(e) => setSingleTrip({ ...singleTrip, tripLocation: e.target.value })}
+                        required
+                    >
+                        <option value="">Select location</option>
+                        {stations.map((station) => (
+                            <option key={station._id} value={station._id}>
+                                {station.stationName} ({station.stationNumber})
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className="form-row">
-                    <label>
+                    <label className="label">
                         Trip Destination:
-                        <select
-                            value={tripDestination || ''}
-                            onChange={(e) => setSingleTrip({ ...singleTrip, tripDestination: e.target.value })}
-                            required
-                        >
-                            <option value="">Select Destination</option>
-                            {stations.map((station) => (
-                                <option key={station._id} value={station._id}>
-                                    {station.stationName} ({station.stationNumber})
-                                </option>
-                            ))}
-                        </select>
                     </label>
+                    <select
+                        value={tripDestination || ''}
+                        onChange={(e) => setSingleTrip({ ...singleTrip, tripDestination: e.target.value })}
+                        required
+                    >
+                        <option value="">Select Destination</option>
+                        {stations.map((station) => (
+                            <option key={station._id} value={station._id}>
+                                {station.stationName} ({station.stationNumber})
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className="form-row">
-                    <label>
+                    <label className="label">
                         Departure Time:
-                        <input
-                            type="datetime-local"
-                            value={departureTime ? new Date(departureTime).toISOString().substr(0, 16) : ''}
-                            onChange={(e) => setSingleTrip({ ...singleTrip, departureTime: e.target.value })}
-                            required
-                        />
                     </label>
+                    <input
+                        type="datetime-local"
+                        value={departureTime ? new Date(departureTime).toISOString().substr(0, 16) : ''}
+                        onChange={(e) => setSingleTrip({ ...singleTrip, departureTime: e.target.value })}
+                        required
+                    />
                 </div>
+            </div>
+            <div className="form-column" style={{ width: '50%', padding: '0 25px' }}>
                 <div className="form-row">
-                    <label>
+                    <label className="label">
                         Arrival Time:
-                        <input
-                            type="datetime-local"
-                            value={arrivalTime ? new Date(arrivalTime).toISOString().substr(0, 16) : ''}
-                            onChange={(e) => setSingleTrip({ ...singleTrip, arrivalTime: e.target.value })}
-                            required
-                        />
                     </label>
+                    <input
+                        type="datetime-local"
+                        value={arrivalTime ? new Date(arrivalTime).toISOString().substr(0, 16) : ''}
+                        onChange={(e) => setSingleTrip({ ...singleTrip, arrivalTime: e.target.value })}
+                        required
+                    />
                 </div>
                 <div className="form-row">
-                    <label>
+                    <label className="label">
                         Estimated Arrival Time:
-                        <input
-                            type="datetime-local"
-                            value={estimatedArrival ? new Date(estimatedArrival).toISOString().substr(0, 16) : ''}
-                            onChange={(e) => setSingleTrip({ ...singleTrip, estimatedArrival: e.target.value })}
-                            required
-                        />
                     </label>
+                    <input
+                        type="datetime-local"
+                        value={estimatedArrival ? new Date(estimatedArrival).toISOString().substr(0, 16) : ''}
+                        onChange={(e) => setSingleTrip({ ...singleTrip, estimatedArrival: e.target.value })}
+                        required
+                    />
                 </div>
                 <div className="form-row">
-                    <label>
+                    <label className="label">
                         Estimated Departure Time:
-                        <input
-                            type="datetime-local"
-                            value={estimatedDeparture ? new Date(estimatedDeparture).toISOString().substr(0, 16) : ''}
-                            onChange={(e) => setSingleTrip({ ...singleTrip, estimatedDeparture: e.target.value })}
-                            required
-                        />
                     </label>
+                    <input
+                        type="datetime-local"
+                        value={estimatedDeparture ? new Date(estimatedDeparture).toISOString().substr(0, 16) : ''}
+                        onChange={(e) => setSingleTrip({ ...singleTrip, estimatedDeparture: e.target.value })}
+                        required
+                    />
                 </div>
-                <div className="form-row">
-                    <label>
-                        Trip Line:
-                        <input
-                            type="text"
-                            value={tripLine || ''}
-                            onChange={(e) => setSingleTrip({ ...singleTrip, tripLine: e.target.value })}
-                            required
-                        />
-                    </label>
-                </div>
-                <div className="form-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <label>
-                        Status:
-                        <br />
-                        <br />
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="tripStatus"
-                                    value="upcoming"
-                                    checked={tripStatus === 'upcoming'}
-                                    onChange={() => setSingleTrip({ ...singleTrip, tripStatus: 'upcoming' })}
-                                />
-                                Upcoming
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="tripStatus"
-                                    value="ongoing"
-                                    checked={tripStatus === 'ongoing'}
-                                    onChange={() => setSingleTrip({ ...singleTrip, tripStatus: 'ongoing' })}
-                                />
-                                Ongoing
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="tripStatus"
-                                    value="completed"
-                                    checked={tripStatus === 'completed'}
-                                    onChange={() => setSingleTrip({ ...singleTrip, tripStatus: 'completed' })}
-                                />
-                                Completed
-                            </label>
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="tripStatus"
-                                    value="canceled"
-                                    checked={tripStatus === 'canceled'}
-                                    onChange={() => setSingleTrip({ ...singleTrip, tripStatus: 'canceled' })}
-                                />
-                                Canceled
-                            </label>
-                        </div>
-                    </label>
-                </div>
-                <br />
                 <div className="form-row">
                     <label htmlFor="selectedBuses" className="form-label">
                         Associated Buses:
-                        <Select
-                            id="selectedBuses"
-                            value={associatedBuses?.map((busId) => ({
-                                value: busId,
-                                label: buses.find((bus) => bus._id === busId)?.Busname || '',
-                            }))}
-                            isMulti
-                            name="selectedBuses"
-                            options={buses.map((bus) => ({
-                                value: bus._id,
-                                label: `${bus.Busname} (${bus.numberOfSeats} seats)`,
-                            }))}
-                            onChange={(selectedOptions) => setSingleTrip({ ...singleTrip, associatedBuses: selectedOptions.map((option) => option.value) })}
-                            className="basic-multi-select"
-                            classNamePrefix="select"
-                            required
-                        />
-
                     </label>
+                    <Select
+                        id="selectedBuses"
+                        value={associatedBuses?.map((busId) => ({
+                            value: busId,
+                            label: buses.find((bus) => bus._id === busId)?.Busname || '',
+                        }))}
+                        isMulti
+                        name="selectedBuses"
+                        options={buses.map((bus) => ({
+                            value: bus._id,
+                            label: `${bus.Busname} (${bus.numberOfSeats} seats)`,
+                        }))}
+                        onChange={(selectedOptions) => setSingleTrip({ ...singleTrip, associatedBuses: selectedOptions.map((option) => option.value) })}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        required
+                    />
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <button type="submit">Update Trip</button>
-                    <button onClick={() => setEdit(!edit)} type="button" style={{ backgroundColor: 'red', marginLeft: '10px' }}>
-                        cancel
-                    </button>
+                <div className="form-row">
+                    <label className="label">
+                        Trip Line:
+                    </label>
+                    <input
+                        type="text"
+                        value={tripLine || ''}
+                        onChange={(e) => setSingleTrip({ ...singleTrip, tripLine: e.target.value })}
+                        required
+                    />
                 </div>
-            </form>
+            </div>
+            <div className="form-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <label className="label">
+                    Status:
+                    <br />
+                    <br />
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <label className="radio-label">
+                            <input
+                                type="radio"
+                                name="tripStatus"
+                                value="upcoming"
+                                checked={tripStatus === 'upcoming'}
+                                onChange={() => setSingleTrip({ ...singleTrip, tripStatus: 'upcoming' })}
+                            />
+                            Upcoming
+                        </label>
+                        <label className="radio-label">
+                            <input
+                                type="radio"
+                                name="tripStatus"
+                                value="ongoing"
+                                checked={tripStatus === 'ongoing'}
+                                onChange={() => setSingleTrip({ ...singleTrip, tripStatus: 'ongoing' })}
+                            />
+                            Ongoing
+                        </label>
+                        <label className="radio-label">
+                            <input
+                                type="radio"
+                                name="tripStatus"
+                                value="completed"
+                                checked={tripStatus === 'completed'}
+                                onChange={() => setSingleTrip({ ...singleTrip, tripStatus: 'completed' })}
+                            />
+                            Completed
+                        </label>
+                        <label className="radio-label">
+                            <input
+                                type="radio"
+                                name="tripStatus"
+                                value="canceled"
+                                checked={tripStatus === 'canceled'}
+                                onChange={() => setSingleTrip({ ...singleTrip, tripStatus: 'canceled' })}
+                            />
+                            Canceled
+                        </label>
+                    </div>
+                </label>
+            </div>
+            <div className='submitdiv' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <button type="submit" className="submit-button" style={{ marginLeft: '70px' }}>
+                    Update Trip
+                </button>
+                <button onClick={() => setEdit(!edit)} type="button" style={{ backgroundColor: 'red', marginLeft: '10px' }}>
+                    cancel
+                </button>
+            </div>
+        </form>
     );
 }
 
