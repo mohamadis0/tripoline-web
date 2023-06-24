@@ -17,6 +17,9 @@ import {
   Typography,
   Button,
 } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 const BusDeletionModal = ({ busId, handleDeleteBus, modalState, setModalState }) => {
@@ -55,13 +58,14 @@ const BusDeletionModal = ({ busId, handleDeleteBus, modalState, setModalState })
   );
 };
 
-const AllBuses = () => {
+const AllBuses = (props) => {
   const [busData, setBusData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [modalState, setModalState] = useState(false);
   const [selectedBusId, setSelectedBusId] = useState('');
+  const [openCreateBus, setOpenCreateBus] = useState(false);
 
   const getAllBuses = async () => {
     try {
@@ -93,6 +97,7 @@ const AllBuses = () => {
 
   useEffect(() => {
     getAllBuses();
+    setOpenCreateBus(!openCreateBus)
   }, []);
 
   const handleChangePage = (event, newPage) => {
@@ -140,12 +145,31 @@ const AllBuses = () => {
                       {bus?.busDriver?.DriverCardId ? bus?.busDriver?.DriverCardId : 'no driver'}
                     </TableCell>
                     <TableCell>
-                      <button
+                      {/* <button
                         className="delete-button"
                         onClick={() => handleDeleteBusConfirmation(bus._id)}
                       >
                         Delete
-                      </button>
+                      </button> */}
+                      <IconButton
+                        aria-label="delete"
+                        color="primary"
+                        className='delete-button'
+                        onClick={() => handleDeleteBusConfirmation(bus._id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="edit"
+                        color="secondary"
+                        className='edit-button'
+                        onClick={() => {
+                          props.setEditingBusId(bus._id);
+                          props.setEdit(true);
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 )

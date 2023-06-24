@@ -4,12 +4,18 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
 import Loader from './Loader';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import BasicModal from './Modal';
 
-const AllUsers = () => {
+const AllUsers = (props) => {
   const [userData, setUserData] = useState([]);
   const [isLoading, setIsLoading] = useState(true); // Loader state
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [modalState, setModalState] = useState(false);
+  const [openCreateUser, setOpenCreateUser] = useState(false);
 
   const getAllUsers = async () => {
     try {
@@ -24,6 +30,7 @@ const AllUsers = () => {
 
   useEffect(() => {
     getAllUsers();
+    setOpenCreateUser(!openCreateUser)
   }, []);
 
   const deleteUser = async (userId) => {
@@ -31,6 +38,7 @@ const AllUsers = () => {
       await axios.delete(`http://localhost:3000/api/users/${userId}`);
       getAllUsers();
       toast.success('User deleted successfully'); // Display success notification
+      setModalState(!modalState);//
     } catch (error) {
       console.log('Error deleting user:', error);
       toast.error('Error deleting user'); // Display error notification
@@ -50,8 +58,8 @@ const AllUsers = () => {
 
   return (
     <div className="table-responsive">
-      {isLoading ? ( 
-        <Loader/>
+      {isLoading ? (
+        <Loader />
       ) : (
         <TableContainer component={Paper}>
           <Table className="user-table">
@@ -75,14 +83,38 @@ const AllUsers = () => {
                     <TableCell>{user.phone}</TableCell>
                     <TableCell>{user.type}</TableCell>
                     <TableCell>
-                      <button
+                      {/* <button
                         onClick={() => deleteUser(user._id)}
                         className='delete-button'
                       >
                         Delete
-                      </button>
+                      </button> */}
+                      <IconButton
+                        aria-label="delete"
+                        color="primary"
+                        className='delete-button'
+                        onClick={() => setModalState(true)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="edit"
+                        color="secondary"
+                        className='edit-button'
+                        onClick={() => {
+                          props.setEditingUserId(user._id);
+                          props.setEdit(true);
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
                     </TableCell>
-                  </TableRow>
+                    <BasicModal
+                      handleDeleteUser={deleteUser}
+                      setModalState={setModalState}
+                      modalState={modalState}
+                      userId={user._id}
+                    />                  </TableRow>
                 )
               )}
               {emptyRows > 0 && (

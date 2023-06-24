@@ -43,6 +43,11 @@ import User from './User';
 import AllUsers from './AllUsers';
 import { Container } from '@mui/material';
 import UpdateTripForm from './edit/UpdateTrip';
+import UpdateProfile from './edit/UpdateProfile';
+import UpdateBus from './edit/UpdateBus';
+import UpdateDriver from './edit/UpdateDriver';
+import UpdateStation from './edit/UpdateStation';
+import UpdateUser from './edit/UpdateUser';
 
 
 const Grid = styled(MuiGrid)(({ theme }) => ({
@@ -122,41 +127,17 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 function Dashboard() {
-    // const navigate = useNavigate();
+    
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
-    const [currentContent, setCurrentContent] = React.useState('Create trip');
+    const [open, setOpen] = React.useState(true);
+    const [currentContent, setCurrentContent] = React.useState('trip');
 
-
-    const [showBus, setShowBus] = useState(false);
-    // const [showTrip, setShowTrip] = useState(false);
-    const [showDriver, setShowDriver] = useState(false);
-    const [showStation, setShowStation] = useState(false);
-    const [showProfile, setShowProfile] = useState(false);
-    const [showUser, setShowUser] = useState(false);
     const [openCreateTrip, setOpenCreateTrip] = useState(false);
-
-
-
-    const handleCreateBusClick = () => {
-        setShowBus(true);
-    };
-    // const handleCreateTripClick = () => {
-    //     setShowTrip(true);
-    //     setEdit(false)
-    // };
-    const handleCreateDriverClick = () => {
-        setShowDriver(true);
-    };
-    const handleCreateStationClick = () => {
-        setShowStation(true);
-    };
-    const handleCreateProfileClick = () => {
-        setShowProfile(true);
-    };
-    const handleCreateUserClick = () => {
-        setShowUser(true);
-    };
+    const [openCreateProfile, setOpenCreateProfile] = useState(false);
+    const [openCreateBus, setOpenCreateBus] = useState(false);
+    const [openCreateDriver, setOpenCreateDriver] = useState(false);
+    const [openCreateStation, setOpenCreateStation] = useState(false);
+    const [openCreateUser, setOpenCreateUser] = useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -176,8 +157,13 @@ function Dashboard() {
     const [userInfo, setUserInfo] = useState(null);
 
     const [edit, setEdit] = useState(false);
+
     const [editingTripId, setEditingTripId] = useState(null);
     const [editingProfileId, setEditingProfileId] = useState(null);
+    const [editingBusId, setEditingBusId] = useState(null);
+    const [editingDriverId, setEditingDriverId] = useState(null);
+    const [editingStationId, setEditingStationId] = useState(null);
+    const [editingUserId, setEditingUserId] = useState(null);
 
 
     const removeuserInfo = () => {
@@ -193,6 +179,12 @@ function Dashboard() {
             setUserInfo(JSON.parse(storedUserInfo));
         }
         setOpenCreateTrip(!openCreateTrip)
+        setOpenCreateProfile(!openCreateProfile)
+        setOpenCreateBus(!openCreateBus)
+        setOpenCreateDriver(!openCreateDriver)
+        setOpenCreateStation(!openCreateStation)
+        setOpenCreateUser(!openCreateUser)
+
     }, []);
 
 
@@ -216,10 +208,10 @@ function Dashboard() {
                     <Link to={'/'} style={{ color: 'white' }}>
                         Login
                     </Link>
-                    &nbsp;or&nbsp;
+                    {/* &nbsp;or&nbsp;
                     <Link to={'/Signup'} style={{ color: 'white' }}>
                         Register
-                    </Link>
+                    </Link> */}
                 </Typography>
             );
         }
@@ -253,7 +245,7 @@ function Dashboard() {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    {['Create trip', 'Create profile', 'Create bus', 'Create driver'].map((text, index) => (
+                    {['trip', 'profile', 'bus', 'driver'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
@@ -271,7 +263,7 @@ function Dashboard() {
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    {index === 0 && <AddRoadIcon sx={{ color: '#004C64' }} />}
+                                    {index === 0 && <AddRoadIcon sx={{ color: '#004C64' }}/>}
                                     {index === 1 && <PersonAddAltRoundedIcon sx={{ color: '#004C64' }} />}
                                     {index === 2 && <DirectionsBusIcon sx={{ color: '#004C64' }} />}
                                     {index === 3 && <AttributionIcon sx={{ color: '#004C64' }} />}
@@ -283,7 +275,7 @@ function Dashboard() {
                 </List>
                 <Divider />
                 <List>
-                    {['Create stations', 'Create users'].map((text, index) => (
+                    {['station', 'user'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
@@ -312,7 +304,7 @@ function Dashboard() {
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />
-                {currentContent === 'Create trip' && (
+                {currentContent === 'trip' && (
                     <Typography paragraph>
                         <Grid container>
                             <Grid item xs={7} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -340,103 +332,142 @@ function Dashboard() {
                     </Typography >
                 )}
                 {
-                    currentContent === 'Create bus' && (
+                    currentContent === 'bus' && (
                         <Typography paragraph>
                             <Grid container>
-                                <Grid item xs={7}>
+                                <Grid item xs={7} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        <AllBuses />
+                                        <AllBuses setEdit={setEdit} setEditingBusId={setEditingBusId} />
                                         <Divider orientation="vertical" flexItem>
-                                            <Button variant="text" onClick={handleCreateBusClick}>Create Bus</Button>
+                                            <Button variant="text" onClick={() => setOpenCreateBus(!openCreateBus)}>
+                                                Create Bus
+                                            </Button>
                                         </Divider>
                                     </Box>
                                 </Grid>
                                 <Grid item xs={5}>
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        {showBus && <Bus />}
-                                    </Box>
+                                        {edit ? (
+                                            <UpdateBus
+                                                edit={edit}
+                                                setEdit={setEdit}
+                                                busId={editingBusId}
+                                            />
+                                        ) : !openCreateBus && <Bus open={openCreateBus} close={setOpenCreateBus} />}                                    </Box>
                                 </Grid>
                             </Grid>
                         </Typography>
-                    )
-                }
+                    )}
                 {
-                    currentContent === 'Create driver' && (
+                    currentContent === 'driver' && (
                         <Typography paragraph>
                             <Grid container>
-                                <Grid item xs={7}>
+                                <Grid item xs={7} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        <AllDrivers />
+                                        <AllDrivers setEdit={setEdit} setEditingDriverId={setEditingDriverId} />
                                         <Divider orientation="vertical" flexItem>
-                                            <Button variant="text" onClick={handleCreateDriverClick}>Create Driver</Button></Divider>
+                                            <Button variant="text" onClick={() => setOpenCreateDriver(!openCreateDriver)}>
+                                                Create Driver
+                                            </Button>
+                                        </Divider>
                                     </Box>
                                 </Grid>
                                 <Grid item xs={5}>
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        {showDriver && <Driver />}
-                                    </Box>
+                                        {edit ? (
+                                            <UpdateDriver
+                                                edit={edit}
+                                                setEdit={setEdit}
+                                                driverId={editingDriverId}
+                                            />
+                                        ) : !openCreateDriver && <Driver open={openCreateDriver} close={setOpenCreateDriver} />}                                    </Box>
                                 </Grid>
                             </Grid>
                         </Typography>
-                    )
-                }
+                    )}
                 {
-                    currentContent === 'Create profile' && (
+                    currentContent === 'profile' && (
                         <Typography paragraph>
                             <Grid container>
-                                <Grid item xs={7}>
+                                <Grid item xs={7} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        <AllProfiles />
-                                        <Divider orientation="vertical" flexItem><Button variant="text" onClick={handleCreateProfileClick}>Create Profile</Button></Divider>
+                                        <AllProfiles setEdit={setEdit} setEditingProfileId={setEditingProfileId} />
+                                        <Divider orientation="vertical" flexItem>
+                                            <Button variant="text" onClick={() => setOpenCreateProfile(!openCreateProfile)}>
+                                                Create Profile
+                                            </Button>
+                                        </Divider>
                                     </Box>
                                 </Grid>
                                 <Grid item xs={5}>
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        {showProfile && <Profile />}
+                                        {/* {showProfile && <Profile />} */}
+                                        {edit ? (
+                                            <UpdateProfile
+                                                edit={edit}
+                                                setEdit={setEdit}
+                                                profileId={editingProfileId}
+                                            />
+                                        ) : !openCreateProfile && <Profile open={openCreateProfile} close={setOpenCreateProfile} />}
                                     </Box>
                                 </Grid>
                             </Grid>
                         </Typography>
-                    )
-                }
+                    )}
                 {
-                    currentContent === 'Create stations' && (
+                    currentContent === 'station' && (
                         <Typography paragraph>
                             <Grid container>
-                                <Grid item xs={7}>
+                                <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        <AllStations />
-                                        <Divider orientation="vertical" flexItem><Button variant="text" onClick={handleCreateStationClick}>Create Station</Button></Divider>
+                                        <AllStations setEdit={setEdit} setEditingStationId={setEditingStationId} />
+                                        <Divider orientation="vertical" flexItem>
+                                            <Button variant="text" onClick={() => setOpenCreateStation(!openCreateStation)}>
+                                                Create Station
+                                            </Button>
+                                        </Divider>
                                     </Box>
                                 </Grid>
                                 <Grid item xs={5}>
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        {showStation && <Station />}
-                                    </Box>
+                                        {edit ? (
+                                            <UpdateStation
+                                                edit={edit}
+                                                setEdit={setEdit}
+                                                stationId={editingStationId}
+                                            />
+                                        ) : !openCreateStation && <Station open={openCreateStation} close={setOpenCreateStation} />}                                    </Box>
                                 </Grid>
                             </Grid>
                         </Typography>
-                    )
-                }
+                    )}
                 {
-                    currentContent === 'Create users' && (
+                    currentContent === 'user' && (
                         <Typography paragraph>
                             <Grid container>
-                                <Grid item xs={7}>
+                                <Grid item xs={7} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        <AllUsers />
-                                        <Divider orientation="vertical" flexItem><Button variant="text" onClick={handleCreateUserClick}>Create User</Button></Divider>
+                                        <AllUsers setEdit={setEdit} setEditingUserId={setEditingUserId} />
+                                        <Divider orientation="vertical" flexItem>
+                                            <Button variant="text" onClick={() => setOpenCreateUser(!openCreateUser)}>
+                                                Create User
+                                            </Button>
+                                        </Divider>
                                     </Box>
                                 </Grid>
                                 <Grid item xs={5}>
                                     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                        {showUser && <User />}
-                                    </Box>
+                                        {edit ? (
+                                            <UpdateUser
+                                                edit={edit}
+                                                setEdit={setEdit}
+                                                userId={editingUserId}
+                                            />
+                                        ) : !openCreateUser && <User open={openCreateUser} close={setOpenCreateUser} />}                                    </Box>
                                 </Grid>
                             </Grid>
                         </Typography>
-                    )
-                }
+                    )}
             </Box >
         </Box >
     );

@@ -79,7 +79,7 @@ const Station = ({ open, close }) => {
 
     return (
         <div>
-            <form onSubmit={handleStationSubmit} className='form-container' style={{ marginRight:150}}>
+            <form onSubmit={handleStationSubmit} className='form-container' style={{ marginRight:150,marginLeft:150}}>
                 <div className="form-column" style={{ width: '50%', padding: '0 25px', marginTop: 15 }}>
                     <div className="form-row" >
                         <label className="label">

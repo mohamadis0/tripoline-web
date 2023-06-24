@@ -55,7 +55,7 @@ function Driver({ open, close }) {
 
   return (
     <div>
-      <form onSubmit={handleDriverSubmit} className='form-container' style={{ marginRight:100}}>
+      <form onSubmit={handleDriverSubmit} className='form-container' style={{ marginRight:100, marginLeft:50}}>
         <div className="form-column" style={{ width: '50%', padding: '0 25px', marginTop: 15 }}>
           <div className="form-row" >
             <label className="label">

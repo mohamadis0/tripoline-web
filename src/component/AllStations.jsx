@@ -4,6 +4,9 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Table, TableHead, TableBody, TableRow, TableCell, TablePagination, Modal, Box, Typography, Button } from '@mui/material';
 import Loader from './Loader';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 const StationDeletionModal = ({ stationId, handleDeleteStation, modalState, setModalState }) => {
@@ -35,21 +38,22 @@ const StationDeletionModal = ({ stationId, handleDeleteStation, modalState, setM
             This action cannot be undone.
           </Typography>
           <Button onClick={() => setModalState(false)}>Cancel</Button>
-          <Button 
-          className='delete-button'
-          onClick={() => handleDeleteStation(stationId)}>Delete</Button>
+          <Button
+            className='delete-button'
+            onClick={() => handleDeleteStation(stationId)}>Delete</Button>
         </Box>
       </Modal>
     </div>
   );
 };
 
-const AllStations = () => {
+const AllStations = (props) => {
   const [stationData, setStationData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [modalState, setModalState] = useState(false);
+  const [openCreateStation, setOpenCreateStation] = useState(false);
   const [selectedStationId, setSelectedStationId] = useState('');
 
   const getAllStations = async () => {
@@ -84,6 +88,7 @@ const AllStations = () => {
 
   useEffect(() => {
     getAllStations();
+    setOpenCreateStation(!openCreateStation)
   }, []);
 
   const handleChangePage = (event, newPage) => {
@@ -126,12 +131,31 @@ const AllStations = () => {
                 <TableCell>{station.stationNumber}</TableCell>
                 <TableCell>{station.stationStatus}</TableCell>
                 <TableCell>
-                  <button
+                  {/* <button
                     onClick={() => handleDeleteStationConfirmation(station._id)}
                     className='delete-button'
                   >
                     Delete
-                  </button>
+                  </button> */}
+                  <IconButton
+                    aria-label="delete"
+                    color="primary"
+                    className='delete-button'
+                    onClick={() => handleDeleteStationConfirmation(station._id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                  <IconButton
+                    aria-label="edit"
+                    color="secondary"
+                    className='edit-button'
+                    onClick={() => {
+                      props.setEditingStationId(station._id);
+                      props.setEdit(true);
+                    }}
+                  >
+                    <EditIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}

@@ -4,12 +4,18 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
 import Loader from './Loader';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import BasicModal from './Modal';
 
-const AllDrivers = () => {
+const AllDrivers = (props) => {
   const [driverData, setDriverData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [isLoading, setIsLoading] = useState(true);
+  const [modalState, setModalState] = useState(false);
+  const [openCreateDriver, setOpenCreateDriver] = useState(false);
 
   const getAllDrivers = async () => {
     try {
@@ -26,6 +32,7 @@ const AllDrivers = () => {
       await axios.delete(`http://localhost:3000/api/drivers/${driverId}`);
       getAllDrivers();
       toast.success('Driver deleted successfully');
+      setModalState(!modalState);//
     } catch (error) {
       console.log(error);
       toast.error('Error deleting driver');
@@ -34,6 +41,7 @@ const AllDrivers = () => {
 
   useEffect(() => {
     getAllDrivers();
+    setOpenCreateDriver(!openCreateDriver)
   }, []);
 
   const handleChangePage = (event, newPage) => {
@@ -75,13 +83,38 @@ const AllDrivers = () => {
                     <TableCell>{driver.DriverCardId}</TableCell>
                     <TableCell>{driver.DriverAge}</TableCell>
                     <TableCell>
-                      <button
+                      {/* <button
                         onClick={() => deleteDriver(driver._id)}
                         className='delete-button'
                       >
                         Delete
-                      </button>
+                      </button> */} 
+                      <IconButton
+                        aria-label="delete"
+                        color="primary"
+                        className='delete-button'
+                        onClick={() => setModalState(true)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="edit"
+                        color="secondary"
+                        className='edit-button'
+                        onClick={() => {
+                          props.setEditingDriverId(driver._id);
+                          props.setEdit(true);
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
                     </TableCell>
+                    <BasicModal
+                    handleDeleteDriver={deleteDriver}
+                    setModalState={setModalState}
+                    modalState={modalState}
+                    driverId={driver._id}
+                  />
                   </TableRow>
                 ))}
                 {emptyRows > 0 && (

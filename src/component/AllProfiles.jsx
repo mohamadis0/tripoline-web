@@ -7,12 +7,14 @@ import Loader from './Loader';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import BasicModal from './Modal';
 
 const AllProfiles = (props) => {
   const [profileData, setProfileData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [modalState, setModalState] = useState(false);
   const [openCreateProfile, setOpenCreateProfile] = useState(false);
 
 
@@ -43,6 +45,7 @@ const AllProfiles = (props) => {
       console.log('Profile deleted successfully');
       setLoading(false);
       toast.success('Profile deleted successfully');
+      setModalState(!modalState);//
     } catch (error) {
       console.log('Error deleting profile:', error);
       setLoading(false);
@@ -95,6 +98,8 @@ const AllProfiles = (props) => {
                         aria-label="delete"
                         color="primary"
                         className='delete-button'
+                        // onClick={() => deleteProfile(profile._id)}
+                        onClick={() => setModalState(true)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -110,29 +115,35 @@ const AllProfiles = (props) => {
                         <EditIcon />
                       </IconButton>
                     </TableCell>
+                    <BasicModal
+                    handleDeleteProfile={deleteProfile}
+                    setModalState={setModalState}
+                    modalState={modalState}
+                    profileId={profile._id}
+                  />
                   </TableRow>
                 ))}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={3} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={profileData.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </>
-  )
-}
-<ToastContainer />
+                {emptyRows > 0 && (
+                  <TableRow style={{ height: 53 * emptyRows }}>
+                    <TableCell colSpan={3} />
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={profileData.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </>
+      )
+      }
+      <ToastContainer />
     </div >
   );
 };

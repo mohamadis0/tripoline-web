@@ -7,7 +7,6 @@ import 'react-toastify/dist/ReactToastify.css';
 const UpdateTripForm = ({ edit, setEdit, tripId }) => {
     const [stations, setStations] = useState([]);
     const [singleTrip, setSingleTrip] = useState({});
-
     const [buses, setBuses] = useState([]);
 
     const fetchStations = async () => {
@@ -99,7 +98,7 @@ const UpdateTripForm = ({ edit, setEdit, tripId }) => {
             <ToastContainer />
             <div className="form-column" style={{ width: '50%', padding: '0 25px' }}>
                 <div className="form-row">
-                    <label className='form-row'>
+                    <label className='label'>
                         <h2>Update the trip</h2>
                     </label>
                 </div>

@@ -28,11 +28,11 @@ function formatDateTime(dateTimeString) {
 
 const SingleTrip = (props) => {
   const [tripData, setTripData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [modalState, setModalState] = useState(false);
-  const [editingTripId, setEditingTripId] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [editingTripId, setEditingTripId] = useState(null);
   const [openCreateTrip, setOpenCreateTrip] = useState(false);
 
   const getSingleTrip = async () => {
@@ -76,7 +76,7 @@ const SingleTrip = (props) => {
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, tripData.length - page * rowsPerPage);
-  const [edit, setEdit] = useState(false);
+  // const [edit, setEdit] = useState(false);
 
   return (
     <div className="table-responsive">
@@ -180,27 +180,6 @@ const SingleTrip = (props) => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-      {/* <button
-        style={{ backgroundColor: 'green', color: 'white', padding: '8px', border: 'none', cursor: 'pointer' }}
-        onClick={() => setOpenCreateTrip(!openCreateTrip)}
-      >
-        Add Trip
-      </button>
-      {edit && (
-        <UpdateTripForm
-          edit={edit}
-          setEdit={setEdit}
-          tripId={editingTripId}
-        />
-      )}
-      {
-        !openCreateTrip && (
-          <SingleTripForm
-            open={openCreateTrip}
-            close={setOpenCreateTrip}
-          />
-        )
-      } */}
       <ToastContainer />
     </div>
   );

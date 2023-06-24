@@ -25,7 +25,7 @@ function Bus({ open, close }) {
     e.preventDefault();
 
     const busData = {
-      Busname: busName,
+      busName: busName,
       numberOfSeats: numberOfSeats,
       busDriver: busDriver,
     };
