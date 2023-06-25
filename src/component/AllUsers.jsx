@@ -2,12 +2,50 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, Modal, Box, Typography, Button } from '@mui/material';
 import Loader from './Loader';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import BasicModal from './Modal';
+
+const UserDeletionModal = ({ userId, handleDeleteUser, modalState, setModalState }) => {
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  return (
+    <div>
+      <Modal
+        open={modalState}
+        onClose={() => setModalState(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Are you sure you want to delete this user?
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            This action cannot be undone.
+          </Typography>
+          <Button onClick={() => setModalState(false)}>Cancel</Button>
+          <Button
+            className='delete-button'
+            onClick={() => handleDeleteUser(userId)}>Delete</Button>
+        </Box>
+      </Modal>
+    </div>
+  );
+};
+
 
 const AllUsers = (props) => {
   const [userData, setUserData] = useState([]);
@@ -16,6 +54,8 @@ const AllUsers = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [modalState, setModalState] = useState(false);
   const [openCreateUser, setOpenCreateUser] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState('');
+
 
   const getAllUsers = async () => {
     try {
@@ -38,7 +78,8 @@ const AllUsers = (props) => {
       await axios.delete(`http://localhost:3000/api/users/${userId}`);
       getAllUsers();
       toast.success('User deleted successfully'); // Display success notification
-      setModalState(!modalState);//
+      // setModalState(!modalState);//
+      setModalState(false);
     } catch (error) {
       console.log('Error deleting user:', error);
       toast.error('Error deleting user'); // Display error notification
@@ -55,6 +96,11 @@ const AllUsers = (props) => {
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, userData.length - page * rowsPerPage);
+
+  const handleDeleteUserConfirmation = (userId) => {
+    setSelectedUserId(userId);
+    setModalState(true);
+  };
 
   return (
     <div className="table-responsive">
@@ -93,7 +139,8 @@ const AllUsers = (props) => {
                         aria-label="delete"
                         color="primary"
                         className='delete-button'
-                        onClick={() => setModalState(true)}
+                        // onClick={() => setModalState(true)}
+                        onClick={() => handleDeleteUserConfirmation(user._id)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -109,12 +156,13 @@ const AllUsers = (props) => {
                         <EditIcon />
                       </IconButton>
                     </TableCell>
-                    <BasicModal
+                    {/* <BasicModal
                       handleDeleteUser={deleteUser}
                       setModalState={setModalState}
                       modalState={modalState}
                       userId={user._id}
-                    />                  </TableRow>
+                    />                   */}
+                  </TableRow>
                 )
               )}
               {emptyRows > 0 && (
@@ -136,6 +184,12 @@ const AllUsers = (props) => {
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+          <UserDeletionModal
+            userId={selectedUserId}
+            handleDeleteUser={deleteUser}
+            modalState={modalState}
+            setModalState={setModalState}
           />
           <ToastContainer />
         </>

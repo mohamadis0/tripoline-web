@@ -17,8 +17,6 @@ const style = {
 };
 
 const BasicModal = ({ 
-  driverId, handleDeleteDriver,
-  userId, handleDeleteUser,
   profileId, handleDeleteProfile,
   tripId, handleDeleteTrip, modalState, setModalState }) => {
     

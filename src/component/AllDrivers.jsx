@@ -2,12 +2,51 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, Modal, Typography, Button, Box, TableRow, Paper, TablePagination } from '@mui/material';
 import Loader from './Loader';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import BasicModal from './Modal';
+// import BasicModal from './Modal';
+
+
+const DriverDeletionModal = ({ driverId, handleDeleteDriver, modalState, setModalState }) => {
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  return (
+    <div>
+      <Modal
+        open={modalState}
+        onClose={() => setModalState(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Are you sure you want to delete this driver?
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            This action cannot be undone.
+          </Typography>
+          <Button onClick={() => setModalState(false)}>Cancel</Button>
+          <Button
+            className='delete-button'
+            onClick={() => handleDeleteDriver(driverId)}>Delete</Button>
+        </Box>
+      </Modal>
+    </div>
+  );
+};
 
 const AllDrivers = (props) => {
   const [driverData, setDriverData] = useState([]);
@@ -16,6 +55,8 @@ const AllDrivers = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [modalState, setModalState] = useState(false);
   const [openCreateDriver, setOpenCreateDriver] = useState(false);
+  const [selectedDriverId, setSelectedDriverId] = useState('');
+
 
   const getAllDrivers = async () => {
     try {
@@ -32,10 +73,12 @@ const AllDrivers = (props) => {
       await axios.delete(`http://localhost:3000/api/drivers/${driverId}`);
       getAllDrivers();
       toast.success('Driver deleted successfully');
-      setModalState(!modalState);//
+      // setModalState(!modalState);//
+      setModalState(false);//
     } catch (error) {
       console.log(error);
       toast.error('Error deleting driver');
+      setModalState(false);//
     }
   };
 
@@ -55,10 +98,15 @@ const AllDrivers = (props) => {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, driverData.length - page * rowsPerPage);
 
+  const handleDeleteDriverConfirmation = (driverId) => {
+    setSelectedDriverId(driverId);
+    setModalState(true);
+  };
+
   return (
     <div className="table-responsive">
       {isLoading ? (
-        <Loader/>
+        <Loader />
       ) : (
         <>
           <TableContainer component={Paper}>
@@ -88,12 +136,13 @@ const AllDrivers = (props) => {
                         className='delete-button'
                       >
                         Delete
-                      </button> */} 
+                      </button> */}
                       <IconButton
                         aria-label="delete"
                         color="primary"
                         className='delete-button'
-                        onClick={() => setModalState(true)}
+                        // onClick={() => setModalState(true)}
+                        onClick={() => handleDeleteDriverConfirmation(driver._id)}
                       >
                         <DeleteIcon />
                       </IconButton>
@@ -109,12 +158,12 @@ const AllDrivers = (props) => {
                         <EditIcon />
                       </IconButton>
                     </TableCell>
-                    <BasicModal
+                    {/* <BasicModal
                     handleDeleteDriver={deleteDriver}
                     setModalState={setModalState}
                     modalState={modalState}
                     driverId={driver._id}
-                  />
+                  /> */}
                   </TableRow>
                 ))}
                 {emptyRows > 0 && (
@@ -133,6 +182,12 @@ const AllDrivers = (props) => {
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+          <DriverDeletionModal
+            driverId={selectedDriverId}
+            handleDeleteDriver={deleteDriver}
+            modalState={modalState}
+            setModalState={setModalState}
           />
         </>
       )}

@@ -104,7 +104,7 @@ function Driver({ open, close }) {
               type="file"
               name="DriverCard"
               onChange={handleChange}
-              required
+              // required
             />
           </div>
           <div className="form-row">
